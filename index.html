@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apex Banking AI Assistant</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #0a1628;
             --bg-secondary: #0f1f3d;
@@ -23,12 +18,11 @@
             --accent-glow: rgba(14, 165, 233, 0.15);
             --gold: #f59e0b;
             --gold-glow: rgba(245, 158, 11, 0.12);
-            --user-bubble: #162444;
             --border: #1e3a5f;
             --success: #10b981;
             --danger: #ef4444;
+            --purple: #8b5cf6;
         }
-
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-tertiary);
@@ -37,412 +31,209 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* Header */
         .header {
             background: linear-gradient(135deg, var(--bg-secondary), #0c1a35);
             border-bottom: 1px solid var(--border);
-            padding: 14px 24px;
+            padding: 12px 24px;
             display: flex;
             align-items: center;
             gap: 14px;
             flex-shrink: 0;
             box-shadow: 0 2px 20px rgba(0,0,0,0.3);
         }
-
         .header-logo {
-            width: 44px;
-            height: 44px;
+            width: 42px; height: 42px;
             background: linear-gradient(135deg, var(--accent), #0369a1);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 800;
-            color: white;
-            flex-shrink: 0;
-            letter-spacing: -0.5px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 800; color: white;
             box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
-
-        .header-info h1 {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: 0.3px;
-        }
-
+        .header-info h1 { font-size: 16px; font-weight: 700; }
         .header-info p {
-            font-size: 12px;
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 500;
+            font-size: 11px; color: var(--success);
+            display: flex; align-items: center; gap: 5px; font-weight: 500;
         }
-
         .header-info p::before {
-            content: '';
-            width: 7px;
-            height: 7px;
-            background: var(--success);
-            border-radius: 50%;
-            display: inline-block;
+            content: ''; width: 6px; height: 6px;
+            background: var(--success); border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .header-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
         .header-badge {
-            margin-left: auto;
-            background: var(--gold-glow);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: var(--gold);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            background: var(--gold-glow); border: 1px solid rgba(245,158,11,0.3);
+            color: var(--gold); padding: 4px 10px; border-radius: 20px;
+            font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
         }
-
-        /* Chat area */
-        .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 0;
-            scroll-behavior: smooth;
+        .call-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border: none; color: white; padding: 8px 16px; border-radius: 10px;
+            font-size: 12px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 2px 10px rgba(16,185,129,0.3);
+            transition: all 0.2s; letter-spacing: 0.3px;
         }
-
-        .chat-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background: #1e3a5f;
-            border-radius: 3px;
-        }
-
-        .message-wrapper {
-            max-width: 768px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .message {
-            display: flex;
-            gap: 16px;
-            padding: 18px 0;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .call-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
+        .call-btn svg { width: 14px; height: 14px; }
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px 0; scroll-behavior: smooth; }
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
+        .message-wrapper { max-width: 768px; margin: 0 auto; padding: 0 24px; }
+        .message { display: flex; gap: 14px; padding: 14px 0; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         .message-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 800;
-            flex-shrink: 0;
-            margin-top: 2px;
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
         }
-
-        .message.bot .message-avatar {
-            background: linear-gradient(135deg, var(--accent), #0369a1);
-            color: white;
-            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.25);
-        }
-
-        .message.user .message-avatar {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            color: white;
-        }
-
-        .message-content {
-            flex: 1;
-            line-height: 1.7;
-            font-size: 15px;
-            color: var(--text-primary);
-            min-width: 0;
-        }
-
-        .message-content p {
-            margin-bottom: 8px;
-        }
-
-        .message-content p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Welcome card */
-        .welcome-card {
-            max-width: 768px;
-            margin: 0 auto;
-            padding: 40px 24px;
-            text-align: center;
-        }
-
+        .message.bot .message-avatar { background: linear-gradient(135deg, var(--accent), #0369a1); color: white; }
+        .message.user .message-avatar { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+        .message-content { flex: 1; line-height: 1.7; font-size: 14px; min-width: 0; white-space: pre-wrap; }
+        .message-content p { margin-bottom: 6px; }
+        .message-content p:last-child { margin-bottom: 0; }
+        .welcome-card { max-width: 768px; margin: 0 auto; padding: 30px 24px; text-align: center; }
         .welcome-icon {
-            width: 72px;
-            height: 72px;
+            width: 64px; height: 64px;
             background: linear-gradient(135deg, var(--accent), #0369a1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 24px;
-            color: white;
-            font-weight: 800;
-            letter-spacing: -1px;
-            box-shadow: 0 8px 30px rgba(14, 165, 233, 0.3);
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin: 0 auto 20px; color: white; font-weight: 800;
+            box-shadow: 0 8px 30px rgba(14,165,233,0.3);
         }
-
-        .welcome-card h2 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .welcome-card > p {
-            color: var(--text-secondary);
-            font-size: 15px;
-            max-width: 520px;
-            margin: 0 auto 32px;
-            line-height: 1.7;
-        }
-
+        .welcome-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .welcome-card > p { color: var(--text-secondary); font-size: 14px; max-width: 560px; margin: 0 auto 24px; line-height: 1.6; }
         .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            max-width: 640px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px; max-width: 700px; margin: 0 auto;
         }
-
         .quick-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-align: left;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            color: var(--text-primary); padding: 12px 14px; border-radius: 12px;
+            font-size: 12px; cursor: pointer; transition: all 0.25s;
+            display: flex; align-items: center; gap: 8px; text-align: left;
         }
-
-        .quick-btn:hover {
-            background: var(--bg-input);
-            border-color: var(--accent);
-            box-shadow: 0 4px 20px var(--accent-glow);
-            transform: translateY(-1px);
+        .quick-btn:hover { background: var(--bg-input); border-color: var(--accent); transform: translateY(-1px); }
+        .quick-btn .icon { font-size: 18px; flex-shrink: 0; }
+        .quick-btn .btn-text { display: flex; flex-direction: column; }
+        .quick-btn .btn-label { font-weight: 600; font-size: 12px; }
+        .quick-btn .btn-desc { font-size: 10px; color: var(--text-secondary); }
+        .section-label {
+            font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px;
+            text-transform: uppercase; margin: 16px auto 8px; max-width: 700px; padding: 0 24px;
         }
-
-        .quick-btn .icon {
-            font-size: 22px;
-            flex-shrink: 0;
+        .security-notice {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+            color: var(--success); font-size: 11px; padding: 8px 14px; border-radius: 10px;
+            margin-top: 16px; max-width: 700px; margin-left: auto; margin-right: auto;
         }
-
-        .quick-btn .btn-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .quick-btn .btn-label {
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .quick-btn .btn-desc {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        /* Input area */
-        .input-area {
-            flex-shrink: 0;
-            padding: 16px 24px 24px;
-            background: var(--bg-tertiary);
-        }
-
-        .input-wrapper {
-            max-width: 768px;
-            margin: 0 auto;
-            position: relative;
-        }
-
+        .security-notice svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .input-area { flex-shrink: 0; padding: 14px 24px 20px; background: var(--bg-tertiary); }
+        .input-wrapper { max-width: 768px; margin: 0 auto; }
         .input-box {
-            display: flex;
-            align-items: flex-end;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 12px 16px;
-            transition: all 0.25s;
+            display: flex; align-items: flex-end;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 16px; padding: 10px 14px; transition: all 0.25s;
         }
-
-        .input-box:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
+        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
         #messageInput {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: inherit;
-            resize: none;
-            max-height: 150px;
-            line-height: 1.5;
-            padding: 2px 0;
+            flex: 1; background: transparent; border: none; outline: none;
+            color: var(--text-primary); font-size: 14px; font-family: inherit;
+            resize: none; max-height: 150px; line-height: 1.5; padding: 2px 0;
         }
-
-        #messageInput::placeholder {
-            color: #4a6a8a;
-        }
-
+        #messageInput::placeholder { color: #4a6a8a; }
         .send-btn {
-            width: 38px;
-            height: 38px;
+            width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--accent), #0369a1);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            flex-shrink: 0;
-            margin-left: 10px;
-            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.25);
+            border: none; border-radius: 10px; color: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0; margin-left: 8px;
         }
-
-        .send-btn:hover {
-            background: linear-gradient(135deg, var(--accent-hover), #0c4a6e);
-            transform: scale(1.05);
-        }
-
-        .send-btn:disabled {
-            background: #1e3a5f;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
-
-        .send-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .input-footer {
-            text-align: center;
-            font-size: 12px;
-            color: #2a4a6a;
-            margin-top: 10px;
-        }
-
-        .input-footer span {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* Typing indicator */
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 4px 0;
-        }
-
+        .send-btn:hover { transform: scale(1.05); }
+        .send-btn:disabled { background: #1e3a5f; cursor: not-allowed; transform: none; }
+        .send-btn svg { width: 16px; height: 16px; }
+        .input-footer { text-align: center; font-size: 11px; color: #2a4a6a; margin-top: 8px; }
+        .input-footer span { color: var(--accent); font-weight: 600; }
+        .typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
         .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
+            width: 7px; height: 7px; background: var(--accent); border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Tool badge */
+        @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
         .tool-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--accent-glow);
-            border: 1px solid rgba(14, 165, 233, 0.2);
-            color: var(--accent);
-            font-size: 12px;
-            padding: 5px 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-weight: 600;
+            display: inline-flex; align-items: center; gap: 5px;
+            background: var(--accent-glow); border: 1px solid rgba(14,165,233,0.2);
+            color: var(--accent); font-size: 11px; padding: 4px 10px;
+            border-radius: 7px; margin-bottom: 8px; font-weight: 600;
         }
-
-        .tool-badge svg {
-            width: 12px;
-            height: 12px;
+        .tool-badge svg { width: 11px; height: 11px; }
+        /* Manal Voice Call Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            z-index: 1000; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px);
         }
-
-        /* Security notice */
-        .security-notice {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            color: var(--success);
-            font-size: 11px;
-            padding: 8px 14px;
-            border-radius: 10px;
-            margin-top: 12px;
-            max-width: 768px;
-            margin-left: auto;
-            margin-right: auto;
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: linear-gradient(160deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--border); border-radius: 24px;
+            padding: 40px; max-width: 420px; width: 90%; text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            animation: modalIn 0.3s ease;
         }
-
-        .security-notice svg {
-            width: 14px;
-            height: 14px;
-            flex-shrink: 0;
+        @keyframes modalIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+        .modal-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--success), #059669);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 32px; color: white;
+            box-shadow: 0 0 30px rgba(16,185,129,0.3);
         }
-
-        /* Responsive */
+        .modal-avatar.calling { animation: callPulse 1.5s infinite; }
+        @keyframes callPulse {
+            0%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 70%{box-shadow:0 0 0 20px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
+        }
+        .modal h3 { font-size: 20px; margin-bottom: 6px; }
+        .modal .subtitle { color: var(--text-secondary); font-size: 13px; margin-bottom: 6px; }
+        .modal .role { color: var(--gold); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+        .modal-status { font-size: 14px; color: var(--success); margin-bottom: 24px; font-weight: 500; }
+        .modal-timer { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; font-variant-numeric: tabular-nums; }
+        .modal-actions { display: flex; gap: 12px; justify-content: center; }
+        .modal-btn {
+            width: 56px; height: 56px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; font-size: 20px;
+        }
+        .modal-btn.end { background: var(--danger); color: white; }
+        .modal-btn.end:hover { transform: scale(1.1); box-shadow: 0 4px 20px rgba(239,68,85,0.4); }
+        .modal-btn.mute { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); }
+        .modal-btn.mute:hover { border-color: var(--accent); color: var(--accent); }
+        .modal-btn.mute.active { background: var(--accent); color: white; }
+        .modal-close {
+            position: absolute; top: 16px; right: 16px; background: none;
+            border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer;
+        }
+        .voice-transcript {
+            background: rgba(14,165,233,0.08); border: 1px solid rgba(14,165,233,0.15);
+            border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;
+            font-size: 13px; color: var(--text-secondary); text-align: left;
+            max-height: 120px; overflow-y: auto; line-height: 1.6;
+        }
+        .voice-transcript .manal { color: var(--success); font-weight: 600; }
+        .voice-transcript .customer { color: var(--purple); font-weight: 600; }
         @media (max-width: 640px) {
-            .header { padding: 12px 16px; }
+            .header { padding: 10px 16px; }
             .header-badge { display: none; }
-            .welcome-card { padding: 30px 16px; }
-            .welcome-card h2 { font-size: 22px; }
-            .quick-actions { grid-template-columns: 1fr; }
-            .input-area { padding: 12px 16px 18px; }
+            .call-btn span.call-text { display: none; }
+            .welcome-card { padding: 20px 16px; }
+            .welcome-card h2 { font-size: 20px; }
+            .quick-actions { grid-template-columns: 1fr 1fr; }
+            .input-area { padding: 10px 16px 16px; }
             .message-wrapper { padding: 0 16px; }
+            .modal { padding: 28px 20px; }
         }
     </style>
 </head>
@@ -451,58 +242,106 @@
         <div class="header-logo">APEX</div>
         <div class="header-info">
             <h1>Apex Banking Assistant</h1>
-            <p>Secure &mdash; Online 24/7</p>
+            <p>Secure &mdash; 15 AI Tools Active</p>
         </div>
-        <div class="header-badge">AI-POWERED</div>
+        <div class="header-right">
+            <div class="header-badge">AI EMPLOYEE</div>
+            <button class="call-btn" onclick="startCall()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span class="call-text">Call Manal</span>
+            </button>
+        </div>
     </div>
 
     <div class="chat-container" id="chatContainer">
         <div class="welcome-card" id="welcomeCard">
             <div class="welcome-icon">APEX</div>
             <h2>Welcome to Apex Banking</h2>
-            <p>I'm your AI-powered banking assistant. I can help you check account balances, view transactions, explore loan options, report lost cards, and find nearby branches.</p>
+            <p>I'm your AI banking employee. I handle accounts, transfers, loans, fraud detection, financial advice, reports, and more &mdash; just like a real bank employee. Or call <strong>Manal</strong> for voice support.</p>
+
+            <div class="section-label">Account & Cards</div>
             <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuick('Check balance for account ACC-1001')">
+                <button class="quick-btn" onclick="sendQuick('Check full profile for account ACC-1001')">
                     <span class="icon">&#127974;</span>
-                    <span class="btn-text">
-                        <span class="btn-label">Account Balance</span>
-                        <span class="btn-desc">Check your current balance</span>
-                    </span>
+                    <span class="btn-text"><span class="btn-label">Account Profile</span><span class="btn-desc">Balance, cards, loans, score</span></span>
                 </button>
-                <button class="quick-btn" onclick="sendQuick('Show transactions for account ACC-1001')">
+                <button class="quick-btn" onclick="sendQuick('Show transaction history for ACC-1001')">
                     <span class="icon">&#128196;</span>
-                    <span class="btn-text">
-                        <span class="btn-label">Transactions</span>
-                        <span class="btn-desc">View recent activity</span>
-                    </span>
+                    <span class="btn-text"><span class="btn-label">Transactions</span><span class="btn-desc">History with categories</span></span>
                 </button>
-                <button class="quick-btn" onclick="sendQuick('Am I eligible for a home loan? My ID is CUST-101')">
-                    <span class="icon">&#127968;</span>
-                    <span class="btn-text">
-                        <span class="btn-label">Loan Eligibility</span>
-                        <span class="btn-desc">Check loan options</span>
-                    </span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('I lost my card ending in 4521, please block it')">
+                <button class="quick-btn" onclick="sendQuick('Show my credit card details for ACC-1001')">
                     <span class="icon">&#128179;</span>
-                    <span class="btn-text">
-                        <span class="btn-label">Report Lost Card</span>
-                        <span class="btn-desc">Block card instantly</span>
-                    </span>
+                    <span class="btn-text"><span class="btn-label">Card Management</span><span class="btn-desc">View, block, limits</span></span>
                 </button>
-                <button class="quick-btn" onclick="sendQuick('Find a branch near Karachi')">
-                    <span class="icon">&#128205;</span>
-                    <span class="btn-text">
-                        <span class="btn-label">Find Branch</span>
-                        <span class="btn-desc">Locate nearest branch</span>
-                    </span>
+                <button class="quick-btn" onclick="sendQuick('I lost my debit card for account ACC-1001, it was stolen')">
+                    <span class="icon">&#128680;</span>
+                    <span class="btn-text"><span class="btn-label">Report Lost Card</span><span class="btn-desc">Block instantly</span></span>
                 </button>
             </div>
+
+            <div class="section-label">Transfers & Payments</div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="sendQuick('Transfer $500 from ACC-1001 to ACC-1002')">
+                    <span class="icon">&#128184;</span>
+                    <span class="btn-text"><span class="btn-label">Transfer Money</span><span class="btn-desc">Internal & international</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Pay my electricity bill of $120 from ACC-1001')">
+                    <span class="icon">&#128161;</span>
+                    <span class="btn-text"><span class="btn-label">Pay Bills</span><span class="btn-desc">Utilities & subscriptions</span></span>
+                </button>
+            </div>
+
+            <div class="section-label">Loans & Financial Advice</div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="sendQuick('Check home loan eligibility for ACC-3001')">
+                    <span class="icon">&#127968;</span>
+                    <span class="btn-text"><span class="btn-label">Loan Eligibility</span><span class="btn-desc">Auto credit scoring</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Give me investment advice for ACC-3001')">
+                    <span class="icon">&#128200;</span>
+                    <span class="btn-text"><span class="btn-label">Financial Advice</span><span class="btn-desc">Budget, savings, invest</span></span>
+                </button>
+            </div>
+
+            <div class="section-label">Security & Operations</div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="sendQuick('Run fraud detection scan on account ACC-1003')">
+                    <span class="icon">&#128737;</span>
+                    <span class="btn-text"><span class="btn-label">Fraud Detection</span><span class="btn-desc">Security scan & alerts</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Check KYC status for ACC-1003')">
+                    <span class="icon">&#128221;</span>
+                    <span class="btn-text"><span class="btn-label">KYC Verification</span><span class="btn-desc">Document processing</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Generate tax report for ACC-3001')">
+                    <span class="icon">&#128202;</span>
+                    <span class="btn-text"><span class="btn-label">Reports</span><span class="btn-desc">Statements, tax, audit</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Find branches in Dubai')">
+                    <span class="icon">&#128205;</span>
+                    <span class="btn-text"><span class="btn-label">Branch Locator</span><span class="btn-desc">25+ countries worldwide</span></span>
+                </button>
+            </div>
+
+            <div class="section-label">Bank Staff Tools</div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="sendQuick('Show market analysis for Asia region')">
+                    <span class="icon">&#127760;</span>
+                    <span class="btn-text"><span class="btn-label">Market Analysis</span><span class="btn-desc">Staff decision support</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Show personalized offers for ACC-1002')">
+                    <span class="icon">&#127873;</span>
+                    <span class="btn-text"><span class="btn-label">Marketing Offers</span><span class="btn-desc">Personalized products</span></span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Show bank performance metrics')">
+                    <span class="icon">&#128202;</span>
+                    <span class="btn-text"><span class="btn-label">Performance</span><span class="btn-desc">Bank-wide metrics</span></span>
+                </button>
+            </div>
+
             <div class="security-notice">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                Your conversation is encrypted and secure. Apex never stores sensitive data.
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                256-bit encrypted | 15 AI tools | 10 customers | 25+ branches worldwide | Voice agent: Manal
             </div>
         </div>
     </div>
@@ -510,16 +349,31 @@
     <div class="input-area">
         <div class="input-wrapper">
             <div class="input-box">
-                <textarea id="messageInput" rows="1" placeholder="Ask about accounts, loans, cards, or branches..."
+                <textarea id="messageInput" rows="1" placeholder="Ask anything — accounts, transfers, loans, fraud, advice, reports..."
                     onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
                 <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </button>
             </div>
-            <div class="input-footer">Apex Banking AI &mdash; Powered by <span>Llama 4 + Groq</span></div>
+            <div class="input-footer">Apex Banking AI Employee &mdash; 15 Tools &mdash; Powered by <span>Llama 4 + Groq</span></div>
+        </div>
+    </div>
+
+    <!-- Manal Voice Call Modal -->
+    <div class="modal-overlay" id="callModal">
+        <div class="modal" style="position:relative;">
+            <button class="modal-close" onclick="endCall()">&times;</button>
+            <div class="modal-avatar" id="callAvatar">&#128222;</div>
+            <h3>Manal</h3>
+            <div class="subtitle">Senior Banking Officer</div>
+            <div class="role">Apex Bank Voice Support</div>
+            <div class="modal-status" id="callStatus">Connecting...</div>
+            <div class="modal-timer" id="callTimer" style="display:none;">00:00</div>
+            <div class="voice-transcript" id="voiceTranscript" style="display:none;"></div>
+            <div class="modal-actions">
+                <button class="modal-btn mute" id="muteBtn" onclick="toggleMute()" title="Mute">&#128263;</button>
+                <button class="modal-btn end" onclick="endCall()" title="End Call">&#128222;</button>
+            </div>
         </div>
     </div>
 
@@ -534,133 +388,135 @@
             el.style.height = 'auto';
             el.style.height = Math.min(el.scrollHeight, 150) + 'px';
         }
-
         function handleKey(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
         }
-
-        function sendQuick(text) {
-            messageInput.value = text;
-            sendMessage();
-        }
+        function sendQuick(text) { messageInput.value = text; sendMessage(); }
 
         function addMessage(role, content, toolUsed) {
-            if (welcomeCard) {
-                welcomeCard.style.display = 'none';
-            }
-
+            if (welcomeCard) welcomeCard.style.display = 'none';
             const wrapper = document.createElement('div');
             wrapper.className = 'message-wrapper';
-
             const msg = document.createElement('div');
             msg.className = `message ${role}`;
-
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
             avatar.textContent = role === 'bot' ? 'A' : 'Y';
-
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-
             let html = '';
             if (toolUsed) {
-                html += `<div class="tool-badge">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                    </svg>
-                    ${toolUsed}
-                </div>`;
+                html += `<div class="tool-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>${toolUsed}</div>`;
             }
-
             const paragraphs = content.split('\n').filter(l => l.trim());
             html += paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
-
             contentDiv.innerHTML = html;
             msg.appendChild(avatar);
             msg.appendChild(contentDiv);
             wrapper.appendChild(msg);
             chatContainer.appendChild(wrapper);
             scrollToBottom();
-
             return wrapper;
         }
 
         function addTypingIndicator() {
             const wrapper = document.createElement('div');
-            wrapper.className = 'message-wrapper';
-            wrapper.id = 'typingIndicator';
-
-            const msg = document.createElement('div');
-            msg.className = 'message bot';
-
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = 'A';
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
+            wrapper.className = 'message-wrapper'; wrapper.id = 'typingIndicator';
+            const msg = document.createElement('div'); msg.className = 'message bot';
+            const avatar = document.createElement('div'); avatar.className = 'message-avatar'; avatar.textContent = 'A';
+            const contentDiv = document.createElement('div'); contentDiv.className = 'message-content';
             contentDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-
-            msg.appendChild(avatar);
-            msg.appendChild(contentDiv);
-            wrapper.appendChild(msg);
-            chatContainer.appendChild(wrapper);
-            scrollToBottom();
+            msg.appendChild(avatar); msg.appendChild(contentDiv);
+            wrapper.appendChild(msg); chatContainer.appendChild(wrapper); scrollToBottom();
         }
-
-        function removeTypingIndicator() {
-            const el = document.getElementById('typingIndicator');
-            if (el) el.remove();
-        }
-
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        function removeTypingIndicator() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+        function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
         async function sendMessage() {
             const text = messageInput.value.trim();
             if (!text || isProcessing) return;
-
-            isProcessing = true;
-            sendBtn.disabled = true;
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-
-            addMessage('user', text);
-            addTypingIndicator();
-
+            isProcessing = true; sendBtn.disabled = true;
+            messageInput.value = ''; messageInput.style.height = 'auto';
+            addMessage('user', text); addTypingIndicator();
             try {
                 const res = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({message: text})
                 });
-
                 const data = await res.json();
                 removeTypingIndicator();
-
-                if (data.error) {
-                    addMessage('bot', 'Sorry, something went wrong. Please try again.');
-                } else {
-                    addMessage('bot', data.reply, data.tool_used || null);
-                }
+                if (data.error) addMessage('bot', 'Sorry, something went wrong. Please try again.');
+                else addMessage('bot', data.reply, data.tool_used || null);
             } catch (err) {
                 removeTypingIndicator();
                 addMessage('bot', 'Connection error. Please check your internet and try again.');
             }
+            isProcessing = false; sendBtn.disabled = false; messageInput.focus();
+        }
 
-            isProcessing = false;
-            sendBtn.disabled = false;
-            messageInput.focus();
+        // ====== MANAL VOICE CALL AGENT ======
+        let callInterval, callSeconds = 0, isMuted = false, callActive = false;
+        const manalConversations = [
+            {delay:3, speaker:'manal', text:'Assalam o Alaikum! This is Manal from Apex Bank. How can I assist you today?'},
+            {delay:8, speaker:'manal', text:'I have access to your account details, transaction history, loans, and all banking services. Please tell me your concern.'},
+            {delay:15, speaker:'manal', text:'I can also help you with fund transfers, bill payments, card management, loan applications, and financial advice.'},
+            {delay:22, speaker:'manal', text:'For security, I can verify your identity using your registered phone number and email.'},
+            {delay:30, speaker:'manal', text:'If you need to visit a branch, I can find the nearest one in any of our 25+ countries. Is there anything specific you need help with?'},
+            {delay:38, speaker:'manal', text:'I can also run a fraud detection scan on your account, check your KYC status, or generate reports like tax documents and account statements.'},
+            {delay:46, speaker:'manal', text:'For our premium and wealth management customers, I provide personalized investment advice and portfolio analysis.'},
+            {delay:55, speaker:'manal', text:'Remember, you can also use our chat assistant for instant support anytime. Is there anything else I can help you with?'},
+        ];
+
+        function startCall() {
+            callActive = true; callSeconds = 0; isMuted = false;
+            document.getElementById('callModal').classList.add('active');
+            document.getElementById('callAvatar').classList.add('calling');
+            document.getElementById('callStatus').textContent = 'Connecting...';
+            document.getElementById('callTimer').style.display = 'none';
+            document.getElementById('voiceTranscript').style.display = 'none';
+            document.getElementById('voiceTranscript').innerHTML = '';
+            document.getElementById('muteBtn').classList.remove('active');
+            setTimeout(() => {
+                if (!callActive) return;
+                document.getElementById('callStatus').textContent = 'Connected';
+                document.getElementById('callAvatar').classList.remove('calling');
+                document.getElementById('callTimer').style.display = 'block';
+                document.getElementById('voiceTranscript').style.display = 'block';
+                callInterval = setInterval(() => {
+                    callSeconds++;
+                    const m = Math.floor(callSeconds / 60).toString().padStart(2,'0');
+                    const s = (callSeconds % 60).toString().padStart(2,'0');
+                    document.getElementById('callTimer').textContent = `${m}:${s}`;
+                }, 1000);
+                manalConversations.forEach(conv => {
+                    setTimeout(() => {
+                        if (!callActive) return;
+                        const transcript = document.getElementById('voiceTranscript');
+                        const label = conv.speaker === 'manal' ? '<span class="manal">Manal:</span>' : '<span class="customer">You:</span>';
+                        transcript.innerHTML += `${label} ${conv.text}<br><br>`;
+                        transcript.scrollTop = transcript.scrollHeight;
+                    }, conv.delay * 1000);
+                });
+            }, 2000);
+        }
+
+        function endCall() {
+            callActive = false;
+            clearInterval(callInterval);
+            document.getElementById('callModal').classList.remove('active');
+            document.getElementById('callAvatar').classList.remove('calling');
+            if (callSeconds > 0) {
+                const m = Math.floor(callSeconds / 60).toString().padStart(2,'0');
+                const s = (callSeconds % 60).toString().padStart(2,'0');
+                addMessage('bot', `Voice call with Manal ended. Duration: ${m}:${s}\n\nManal is Apex Bank\'s Senior Banking Officer available for voice support. She can assist with any banking need — accounts, transfers, loans, fraud issues, and more.\n\nYou can also continue chatting here for instant help.`, 'Voice Agent: Manal');
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').classList.toggle('active', isMuted);
+            document.getElementById('muteBtn').innerHTML = isMuted ? '&#128264;' : '&#128263;';
         }
 
         messageInput.focus();
