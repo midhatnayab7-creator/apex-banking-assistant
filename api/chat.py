@@ -647,8 +647,10 @@ def check_account_balance(account_id):
             f"Monthly Income: ${acc['monthly_income']:,} | Member Since: {acc['joined']}\n"
             f"Nominee: {acc['nominee']} | KYC: {acc['kyc']}"
             f"{card_info}"
-            f"{f'{chr(10)}Active Loans:{loans}' if loans else ''}"
-            f"\nInvestment Portfolio: ${inv_total:,} (Mutual Funds: ${inv.get('mutual_funds',0):,} | FD: ${inv.get('fixed_deposit',0):,} | Gold: ${inv.get('gold',0):,}{f' | Stocks: ${inv.get(chr(39)+chr(39),0):,}' if 'stocks' in inv else ''})"
+            + ("\nActive Loans:" + loans if loans else "")
+            + f"\nInvestment Portfolio: ${inv_total:,} (Mutual Funds: ${inv.get('mutual_funds',0):,} | FD: ${inv.get('fixed_deposit',0):,} | Gold: ${inv.get('gold',0):,}"
+            + (f" | Stocks: ${inv.get('stocks',0):,}" if 'stocks' in inv else "")
+            + (f" | Bonds: ${inv.get('bonds',0):,}" if 'bonds' in inv else "") + ")"
             f"{flags}")
 
 
@@ -839,7 +841,7 @@ def get_financial_advice(account_id, advice_type):
     elif at == "investment":
         return (f"INVESTMENT ADVICE — {acc['name']} ({account_id})\n"
                 f"Current Portfolio: ${inv_total:,}\n"
-                f"Breakdown: {' | '.join(f'{k.replace(chr(95), chr(32)).title()}: ${v:,}' for k, v in inv.items() if v > 0)}\n"
+                f"Breakdown: {' | '.join(k.replace('_', ' ').title() + ': $' + f'{v:,}' for k, v in inv.items() if v > 0)}\n"
                 f"Risk Profile: {'Conservative' if acc['age'] > 50 else 'Moderate' if acc['age'] > 35 else 'Aggressive'}\n\n"
                 f"RECOMMENDATIONS:\n"
                 f"- {'Diversify into bonds and fixed income for stability' if acc['age'] > 50 else 'Good time to increase equity allocation for growth' if acc['age'] < 40 else 'Maintain balanced portfolio between equity and debt'}\n"
@@ -911,7 +913,7 @@ def manage_card(account_id, action, card_type="debit"):
                 f"Daily Limit: ${card['limit']:,}\n"
                 f"International: {'Enabled' if card['international'] else 'Disabled'}\n"
                 f"Expiry: {card['expiry']}\n"
-                f"{'Credit Used: $' + f'{card[\"used\"]:,}' + ' | Available: $' + f'{card[\"limit\"] - card[\"used\"]:,}' if 'used' in card else ''}")
+                + (f" | Credit Used: ${card.get('used',0):,} | Available: ${card.get('limit',0) - card.get('used',0):,}" if 'used' in card else ''))
     elif act == "block":
         return f"Card {card['number']} has been BLOCKED. Visit your branch or call 1-800-APEX-BANK to unblock."
     elif act == "unblock":
