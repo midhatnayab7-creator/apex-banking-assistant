@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Banking AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a1628;
+            --bg-secondary: #0f1f3d;
+            --bg-tertiary: #060e1f;
+            --bg-input: #162444;
+            --text-primary: #e8edf5;
+            --text-secondary: #8899b8;
+            --accent: #0ea5e9;
+            --accent-hover: #0284c7;
+            --accent-glow: rgba(14, 165, 233, 0.15);
+            --gold: #f59e0b;
+            --gold-glow: rgba(245, 158, 11, 0.12);
+            --user-bubble: #162444;
+            --border: #1e3a5f;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary), #0c1a35);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .header-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), #0369a1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .header-info h1 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.3px;
+        }
+
+        .header-info p {
+            font-size: 12px;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .header-info p::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .header-badge {
+            margin-left: auto;
+            background: var(--gold-glow);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Chat area */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 0;
+            scroll-behavior: smooth;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #1e3a5f;
+            border-radius: 3px;
+        }
+
+        .message-wrapper {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .message {
+            display: flex;
+            gap: 16px;
+            padding: 18px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, var(--accent), #0369a1);
+            color: white;
+            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.25);
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .message-content {
+            flex: 1;
+            line-height: 1.7;
+            font-size: 15px;
+            color: var(--text-primary);
+            min-width: 0;
+        }
+
+        .message-content p {
+            margin-bottom: 8px;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Welcome card */
+        .welcome-card {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .welcome-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--accent), #0369a1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 24px;
+            color: white;
+            font-weight: 800;
+            letter-spacing: -1px;
+            box-shadow: 0 8px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .welcome-card h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-card > p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 520px;
+            margin: 0 auto 32px;
+            line-height: 1.7;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .quick-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .quick-btn:hover {
+            background: var(--bg-input);
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .quick-btn .icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .quick-btn .btn-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quick-btn .btn-label {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .quick-btn .btn-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Input area */
+        .input-area {
+            flex-shrink: 0;
+            padding: 16px 24px 24px;
+            background: var(--bg-tertiary);
+        }
+
+        .input-wrapper {
+            max-width: 768px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .input-box {
+            display: flex;
+            align-items: flex-end;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px 16px;
+            transition: all 0.25s;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        #messageInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: inherit;
+            resize: none;
+            max-height: 150px;
+            line-height: 1.5;
+            padding: 2px 0;
+        }
+
+        #messageInput::placeholder {
+            color: #4a6a8a;
+        }
+
+        .send-btn {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent), #0369a1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
+            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.25);
+        }
+
+        .send-btn:hover {
+            background: linear-gradient(135deg, var(--accent-hover), #0c4a6e);
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            background: #1e3a5f;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .send-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .input-footer {
+            text-align: center;
+            font-size: 12px;
+            color: #2a4a6a;
+            margin-top: 10px;
+        }
+
+        .input-footer span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Tool badge */
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: var(--accent);
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .tool-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Security notice */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            font-size: 11px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            margin-top: 12px;
+            max-width: 768px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .security-notice svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header { padding: 12px 16px; }
+            .header-badge { display: none; }
+            .welcome-card { padding: 30px 16px; }
+            .welcome-card h2 { font-size: 22px; }
+            .quick-actions { grid-template-columns: 1fr; }
+            .input-area { padding: 12px 16px 18px; }
+            .message-wrapper { padding: 0 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">APEX</div>
+        <div class="header-info">
+            <h1>Apex Banking Assistant</h1>
+            <p>Secure &mdash; Online 24/7</p>
+        </div>
+        <div class="header-badge">AI-POWERED</div>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="welcome-card" id="welcomeCard">
+            <div class="welcome-icon">APEX</div>
+            <h2>Welcome to Apex Banking</h2>
+            <p>I'm your AI-powered banking assistant. I can help you check account balances, view transactions, explore loan options, report lost cards, and find nearby branches.</p>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="sendQuick('Check balance for account ACC-1001')">
+                    <span class="icon">&#127974;</span>
+                    <span class="btn-text">
+                        <span class="btn-label">Account Balance</span>
+                        <span class="btn-desc">Check your current balance</span>
+                    </span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Show transactions for account ACC-1001')">
+                    <span class="icon">&#128196;</span>
+                    <span class="btn-text">
+                        <span class="btn-label">Transactions</span>
+                        <span class="btn-desc">View recent activity</span>
+                    </span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Am I eligible for a home loan? My ID is CUST-101')">
+                    <span class="icon">&#127968;</span>
+                    <span class="btn-text">
+                        <span class="btn-label">Loan Eligibility</span>
+                        <span class="btn-desc">Check loan options</span>
+                    </span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('I lost my card ending in 4521, please block it')">
+                    <span class="icon">&#128179;</span>
+                    <span class="btn-text">
+                        <span class="btn-label">Report Lost Card</span>
+                        <span class="btn-desc">Block card instantly</span>
+                    </span>
+                </button>
+                <button class="quick-btn" onclick="sendQuick('Find a branch near Karachi')">
+                    <span class="icon">&#128205;</span>
+                    <span class="btn-text">
+                        <span class="btn-label">Find Branch</span>
+                        <span class="btn-desc">Locate nearest branch</span>
+                    </span>
+                </button>
+            </div>
+            <div class="security-notice">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Your conversation is encrypted and secure. Apex never stores sensitive data.
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div class="input-wrapper">
+            <div class="input-box">
+                <textarea id="messageInput" rows="1" placeholder="Ask about accounts, loans, cards, or branches..."
+                    onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-footer">Apex Banking AI &mdash; Powered by <span>Llama 4 + Groq</span></div>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const welcomeCard = document.getElementById('welcomeCard');
+        let isProcessing = false;
+
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+        }
+
+        function handleKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendQuick(text) {
+            messageInput.value = text;
+            sendMessage();
+        }
+
+        function addMessage(role, content, toolUsed) {
+            if (welcomeCard) {
+                welcomeCard.style.display = 'none';
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper';
+
+            const msg = document.createElement('div');
+            msg.className = `message ${role}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = role === 'bot' ? 'A' : 'Y';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+
+            let html = '';
+            if (toolUsed) {
+                html += `<div class="tool-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                    </svg>
+                    ${toolUsed}
+                </div>`;
+            }
+
+            const paragraphs = content.split('\n').filter(l => l.trim());
+            html += paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+
+            contentDiv.innerHTML = html;
+            msg.appendChild(avatar);
+            msg.appendChild(contentDiv);
+            wrapper.appendChild(msg);
+            chatContainer.appendChild(wrapper);
+            scrollToBottom();
+
+            return wrapper;
+        }
+
+        function addTypingIndicator() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper';
+            wrapper.id = 'typingIndicator';
+
+            const msg = document.createElement('div');
+            msg.className = 'message bot';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = 'A';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+
+            msg.appendChild(avatar);
+            msg.appendChild(contentDiv);
+            wrapper.appendChild(msg);
+            chatContainer.appendChild(wrapper);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text || isProcessing) return;
+
+            isProcessing = true;
+            sendBtn.disabled = true;
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            addMessage('user', text);
+            addTypingIndicator();
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await res.json();
+                removeTypingIndicator();
+
+                if (data.error) {
+                    addMessage('bot', 'Sorry, something went wrong. Please try again.');
+                } else {
+                    addMessage('bot', data.reply, data.tool_used || null);
+                }
+            } catch (err) {
+                removeTypingIndicator();
+                addMessage('bot', 'Connection error. Please check your internet and try again.');
+            }
+
+            isProcessing = false;
+            sendBtn.disabled = false;
+            messageInput.focus();
+        }
+
+        messageInput.focus();
+    </script>
+</body>
+</html>
