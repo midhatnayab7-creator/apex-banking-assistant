@@ -158,8 +158,8 @@ tools = [
                         "description": "Receiver's account number or IBAN"
                     },
                     "amount": {
-                        "type": "number",
-                        "description": "Amount to transfer"
+                        "type": "string",
+                        "description": "Amount to transfer (number)"
                     },
                     "currency": {
                         "type": "string",
@@ -191,8 +191,8 @@ tools = [
                         "description": "Service provider name"
                     },
                     "amount": {
-                        "type": "number",
-                        "description": "Bill amount"
+                        "type": "string",
+                        "description": "Bill amount (number)"
                     }
                 },
                 "required": ["account_id", "bill_type", "amount"]
@@ -1123,8 +1123,8 @@ def run_tool(name, arguments):
         "check_loan_eligibility": lambda a: check_loan_eligibility(a["account_id"], a["loan_type"]),
         "report_lost_card": lambda a: report_lost_card(a["account_id"], a.get("card_type", "debit"), a["reason"]),
         "get_branch_info": lambda a: get_branch_info(a["city"]),
-        "transfer_money": lambda a: transfer_money(a["from_account"], a["to_account"], a["amount"], a.get("currency", "USD")),
-        "pay_bill": lambda a: pay_bill(a["account_id"], a["bill_type"], a["amount"], a.get("provider", "")),
+        "transfer_money": lambda a: transfer_money(a["from_account"], a["to_account"], float(a["amount"]), a.get("currency", "USD")),
+        "pay_bill": lambda a: pay_bill(a["account_id"], a["bill_type"], float(a["amount"]), a.get("provider", "")),
         "get_financial_advice": lambda a: get_financial_advice(a["account_id"], a["advice_type"]),
         "fraud_detection": lambda a: fraud_detection(a["account_id"]),
         "manage_card": lambda a: manage_card(a["account_id"], a["action"], a.get("card_type", "debit")),
