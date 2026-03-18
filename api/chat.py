@@ -27,6 +27,12 @@ YOUR CAPABILITIES:
 9. Personalized Marketing — Suggest offers, recommend products, customer retention alerts
 10. System Integration — Access core banking, CRM, and payment gateways
 
+UNIVERSAL BANKING KNOWLEDGE:
+- You have complete knowledge of ALL major banks worldwide — their services, rates, branches, SWIFT codes, IBAN formats, and policies.
+- If a customer asks about ANY bank (e.g., JPMorgan, HSBC, HBL, Meezan, UBL, Bank Alfalah, Standard Chartered, Citibank, Wells Fargo, Deutsche Bank, etc.), use the lookup_bank_info tool to provide accurate details.
+- You can compare banks, recommend which bank is better for specific needs, explain their products, and guide customers on opening accounts at any bank.
+- You know all banking regulations, SWIFT/BIC codes, IBAN structures, exchange rates, and international transfer procedures.
+
 BEHAVIOR RULES:
 - Always be professional, warm, and helpful like a real bank employee
 - Use the appropriate tool for every request — never guess data
@@ -35,7 +41,9 @@ BEHAVIOR RULES:
 - When you can't fulfill a request, explain why and suggest alternatives
 - Support multiple languages if the customer writes in another language
 - Proactively suggest useful services based on the customer's situation
-- Always confirm before executing sensitive operations (transfers, card blocks, loan applications)"""
+- Always confirm before executing sensitive operations (transfers, card blocks, loan applications)
+- When asked about any bank in the world, use the lookup_bank_info tool to provide complete information
+- You can compare Apex Bank with any competitor and highlight advantages"""
 
 # ----------------------------
 # TOOLS DEFINITION (15 Tools)
@@ -366,11 +374,523 @@ tools = [
                 "required": ["account_id"]
             }
         }
+    },
+    # === UNIVERSAL BANK INFO TOOL ===
+    {
+        "type": "function",
+        "function": {
+            "name": "lookup_bank_info",
+            "description": "Look up detailed information about ANY bank in the world — services, rates, SWIFT codes, branches, products, comparisons. Works for all major banks globally.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "bank_name": {
+                        "type": "string",
+                        "description": "Name of the bank (e.g., JPMorgan, HSBC, HBL, Meezan Bank, UBL, Bank Alfalah, etc.)"
+                    },
+                    "info_type": {
+                        "type": "string",
+                        "description": "Type of info: overview, services, rates, branches, swift_code, products, digital_banking, compare_with_apex"
+                    }
+                },
+                "required": ["bank_name"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_exchange_rates",
+            "description": "Get current exchange rates between currencies, international transfer fees, and forex information",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "from_currency": {
+                        "type": "string",
+                        "description": "Source currency code (e.g., USD, PKR, GBP, EUR)"
+                    },
+                    "to_currency": {
+                        "type": "string",
+                        "description": "Target currency code"
+                    },
+                    "amount": {
+                        "type": "string",
+                        "description": "Amount to convert (optional)"
+                    }
+                },
+                "required": ["from_currency", "to_currency"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "banking_knowledge",
+            "description": "Answer any banking question — regulations, policies, account types, insurance, tax rules, investment products, Islamic banking, mortgage info, credit card comparisons, retirement planning, and general financial literacy",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "Banking topic or question"
+                    },
+                    "country": {
+                        "type": "string",
+                        "description": "Country for region-specific regulations (optional)"
+                    }
+                },
+                "required": ["topic"]
+            }
+        }
     }
 ]
 
 # =============================================
-# MASSIVE CUSTOMER DATABASE
+# WORLDWIDE BANK DATABASE (60+ Banks)
+# =============================================
+
+WORLD_BANKS = {
+    # ===== PAKISTAN =====
+    "hbl": {
+        "full_name": "Habib Bank Limited (HBL)", "country": "Pakistan", "hq": "Karachi",
+        "founded": 1941, "type": "Commercial Bank", "ownership": "Aga Khan Fund for Economic Development",
+        "swift": "HABORPKAXXX", "total_assets": "$25.2B", "branches": 1700, "atms": 2200,
+        "employees": 18000, "customers": "25M+",
+        "services": ["Current & Savings Accounts", "Home Loans", "Car Loans", "Personal Loans", "Credit Cards (Visa/MC)", "Islamic Banking (HBL Islamic)", "Roshan Digital Account (for overseas Pakistanis)", "HBL Mobile App", "Internet Banking", "Lockers", "Remittances", "Forex", "Trade Finance", "Agriculture Finance"],
+        "rates": {"savings": "7.5-11%", "fd": "12-16%", "personal_loan": "21-24%", "home_loan": "14-18%", "car_loan": "16-20%"},
+        "digital": "HBL Mobile, HBL Konnect, PayPak, 1Link ATM Network",
+        "notable": "Largest private bank in Pakistan. Operates in 15 countries.",
+        "website": "hbl.com"
+    },
+    "meezan": {
+        "full_name": "Meezan Bank Limited", "country": "Pakistan", "hq": "Karachi",
+        "founded": 1997, "type": "Islamic Bank (Largest in Pakistan)", "ownership": "Noman Group / Public",
+        "swift": "MEABORPKXXX", "total_assets": "$14.8B", "branches": 1050, "atms": 800,
+        "employees": 14000, "customers": "10M+",
+        "services": ["Islamic Current & Savings Accounts", "Home Musharakah (Islamic Home Loan)", "Car Ijarah (Islamic Car Lease)", "Islamic Credit Cards", "Roshan Digital Account", "Meezan Mobile App", "Dollar/Naya Pakistan Certificates", "Islamic Mutual Funds", "Takaful (Islamic Insurance)", "Branchless Banking"],
+        "rates": {"savings": "6-9% (profit-sharing)", "fd": "11-15% (Mudarabah)", "home_financing": "KIBOR+3-4%", "car_ijarah": "KIBOR+2.5-3.5%"},
+        "digital": "Meezan Mobile App, WhatsApp Banking, Internet Banking",
+        "notable": "Pakistan's first and largest Islamic bank. Won 'Best Islamic Bank' 16 years in a row.",
+        "website": "meezanbank.com"
+    },
+    "ubl": {
+        "full_name": "United Bank Limited (UBL)", "country": "Pakistan", "hq": "Karachi",
+        "founded": 1959, "type": "Commercial Bank", "ownership": "Bestway Group (UK-based)",
+        "swift": "UNABORPKXXX", "total_assets": "$14B", "branches": 1400, "atms": 1500,
+        "employees": 13000, "customers": "15M+",
+        "services": ["Savings & Current Accounts", "UBL Wiz (Digital Account)", "Home Loans", "Car Loans", "Personal Loans", "Credit Cards (Visa/MC)", "UBL Ameen (Islamic Banking)", "Remittances (UBL Omni)", "Forex", "Lockers", "Insurance"],
+        "rates": {"savings": "7-10%", "fd": "12-15.5%", "personal_loan": "20-24%", "home_loan": "15-18%"},
+        "digital": "UBL Digital App, UBL Omni, Internet Banking",
+        "notable": "2nd largest private bank in Pakistan. Strong presence in UAE, UK, US.",
+        "website": "ubl.com.pk"
+    },
+    "alfalah": {
+        "full_name": "Bank Alfalah Limited", "country": "Pakistan", "hq": "Karachi",
+        "founded": 1997, "type": "Commercial Bank", "ownership": "Abu Dhabi Group",
+        "swift": "ALFHPKKA", "total_assets": "$10B", "branches": 800, "atms": 1000,
+        "employees": 10000, "customers": "8M+",
+        "services": ["Savings & Current Accounts", "Alfalah Orbit (Digital Account)", "Home Finance", "Car Finance", "Personal Loans", "Credit Cards (Visa/MC)", "Islamic Banking (Alfalah Islamic)", "Alfa App (Digital Banking)", "Remittances", "Forex", "Corporate Banking"],
+        "rates": {"savings": "7-9.5%", "fd": "11-14.5%", "personal_loan": "22-26%", "home_loan": "15-19%"},
+        "digital": "Alfa App, Internet Banking, QR Payments, Alfalah CLIQ",
+        "notable": "Known for best digital banking experience in Pakistan. Owned by Abu Dhabi Group.",
+        "website": "bankalfalah.com"
+    },
+    "mcb": {
+        "full_name": "MCB Bank Limited (Muslim Commercial Bank)", "country": "Pakistan", "hq": "Lahore",
+        "founded": 1947, "type": "Commercial Bank", "ownership": "Mian Mansha (Nishat Group)",
+        "swift": "MUCBPKKA", "total_assets": "$13B", "branches": 1500, "atms": 1600,
+        "employees": 15000, "customers": "12M+",
+        "services": ["Savings & Current Accounts", "Home Loans", "Car Loans", "Personal Loans", "MCB Lite (Digital Wallet)", "Credit Cards", "Islamic Banking (MCB Islamic)", "Forex", "Lockers", "Remittances", "Trade Finance"],
+        "rates": {"savings": "7.5-10.5%", "fd": "12-15%", "personal_loan": "21-25%", "home_loan": "14-17%"},
+        "digital": "MCB Mobile App, MCB Lite, Internet Banking",
+        "notable": "One of Pakistan's most profitable banks. Strong corporate banking.",
+        "website": "mcb.com.pk"
+    },
+    "jazzcash": {
+        "full_name": "JazzCash (by Jazz/Mobilink Microfinance Bank)", "country": "Pakistan", "hq": "Islamabad",
+        "founded": 2012, "type": "Mobile Financial Services / Digital Wallet", "ownership": "Jazz (VEON Group)",
+        "swift": "N/A", "total_assets": "$1.5B", "branches": 0, "atms": 0,
+        "employees": 3000, "customers": "40M+ accounts",
+        "services": ["Mobile Wallet", "Money Transfer", "Bill Payments", "Mobile Top-up", "Savings Account", "Micro Loans", "QR Payments", "Online Shopping Payments", "Salary Disbursement", "Government Payments (BISP/Ehsaas)"],
+        "rates": {"savings": "6-8%", "micro_loan": "30-35% APR"},
+        "digital": "JazzCash App, USSD (*786#), Agent Network (200K+ agents)",
+        "notable": "Pakistan's largest mobile wallet. Used for government social payments.",
+        "website": "jazzcash.com.pk"
+    },
+    "easypaisa": {
+        "full_name": "Easypaisa (by Telenor Microfinance Bank)", "country": "Pakistan", "hq": "Islamabad",
+        "founded": 2009, "type": "Mobile Financial Services / Digital Wallet", "ownership": "Telenor Group / Ant Financial",
+        "swift": "N/A", "total_assets": "$1.2B", "branches": 0, "atms": 0,
+        "employees": 2500, "customers": "35M+ accounts",
+        "services": ["Mobile Wallet", "Money Transfer", "Bill Payments", "Mini Loans", "Savings Account", "Insurance (Easypaisa Sahulat)", "QR Payments", "Online Payments", "Freelancer Payments"],
+        "rates": {"savings": "6-7%", "mini_loan": "28-33% APR"},
+        "digital": "Easypaisa App, USSD (*786#), Agent Network (170K+ agents)",
+        "notable": "Pakistan's first mobile wallet (2009). Backed by Ant Financial (Alibaba).",
+        "website": "easypaisa.com.pk"
+    },
+    # ===== USA =====
+    "jpmorgan": {
+        "full_name": "JPMorgan Chase & Co.", "country": "USA", "hq": "New York City",
+        "founded": 1799, "type": "Investment & Commercial Bank", "ownership": "Public (NYSE: JPM)",
+        "swift": "CHASUS33", "total_assets": "$3.9T", "branches": 4700, "atms": 16000,
+        "employees": 310000, "customers": "82M+",
+        "services": ["Checking & Savings", "Credit Cards (Chase Sapphire, Freedom)", "Mortgages", "Auto Loans", "Personal Loans", "Investment Banking", "Wealth Management", "Private Banking", "Commercial Banking", "Treasury Services", "Custody", "Asset Management"],
+        "rates": {"savings": "0.01-4.5% (APY)", "cd": "4-5% APY", "mortgage": "6.5-7.5%", "personal_loan": "7-18%"},
+        "digital": "Chase Mobile App, Zelle, Chase Pay, Digital Wallet",
+        "notable": "Largest bank in the US and world by market cap. CEO: Jamie Dimon.",
+        "website": "chase.com"
+    },
+    "bankofamerica": {
+        "full_name": "Bank of America Corporation", "country": "USA", "hq": "Charlotte, NC",
+        "founded": 1904, "type": "Commercial & Investment Bank", "ownership": "Public (NYSE: BAC)",
+        "swift": "BOFAUS3N", "total_assets": "$3.2T", "branches": 3900, "atms": 15000,
+        "employees": 215000, "customers": "69M+",
+        "services": ["Checking & Savings", "Credit Cards (Cash Rewards, Travel)", "Mortgages", "Auto Loans", "Merrill (Investment)", "Private Banking", "Commercial Banking", "Wealth Management"],
+        "rates": {"savings": "0.01-4.35% APY", "cd": "3.5-4.75% APY", "mortgage": "6.5-7.5%"},
+        "digital": "BofA Mobile App, Erica (AI Assistant), Zelle, Digital Wallet",
+        "notable": "2nd largest US bank. Has AI assistant 'Erica' with 1.5B interactions.",
+        "website": "bankofamerica.com"
+    },
+    "wellsfargo": {
+        "full_name": "Wells Fargo & Company", "country": "USA", "hq": "San Francisco, CA",
+        "founded": 1852, "type": "Commercial & Consumer Bank", "ownership": "Public (NYSE: WFC)",
+        "swift": "WFBIUS6S", "total_assets": "$1.9T", "branches": 4600, "atms": 12000,
+        "employees": 240000, "customers": "70M+",
+        "services": ["Checking & Savings", "Credit Cards", "Mortgages", "Auto Loans", "Personal Loans", "Small Business Banking", "Commercial Banking", "Wealth Management", "Investment"],
+        "rates": {"savings": "0.01-4.25% APY", "cd": "3-4.5% APY", "mortgage": "6.5-7.5%"},
+        "digital": "Wells Fargo Mobile, Zelle, Control Tower",
+        "notable": "3rd largest US bank. Largest mortgage lender.",
+        "website": "wellsfargo.com"
+    },
+    "citibank": {
+        "full_name": "Citigroup Inc. (Citibank)", "country": "USA", "hq": "New York City",
+        "founded": 1812, "type": "Global Commercial & Investment Bank", "ownership": "Public (NYSE: C)",
+        "swift": "CITIUS33", "total_assets": "$2.4T", "branches": 600, "atms": 65000,
+        "employees": 240000, "customers": "200M+ (160 countries)",
+        "services": ["Checking & Savings", "Credit Cards (Double Cash, Premier)", "Mortgages", "Personal Loans", "Global Banking", "Investment Banking", "Wealth Management", "Trade Finance", "Treasury", "Custody"],
+        "rates": {"savings": "0.01-4.5% APY", "cd": "3.5-4.75% APY", "mortgage": "6.5-7.5%"},
+        "digital": "Citi Mobile App, Global Transfers, Citi Pay",
+        "notable": "Most global US bank — operates in 160 countries. Strong in Asia.",
+        "website": "citibank.com"
+    },
+    "goldmansachs": {
+        "full_name": "Goldman Sachs Group Inc.", "country": "USA", "hq": "New York City",
+        "founded": 1869, "type": "Investment Bank & Financial Services", "ownership": "Public (NYSE: GS)",
+        "swift": "GSCMUS33", "total_assets": "$1.6T", "branches": 0, "atms": 0,
+        "employees": 49000, "customers": "Consumer via Marcus",
+        "services": ["Investment Banking", "Securities", "Asset Management", "Marcus (Consumer Banking)", "High-Yield Savings", "Personal Loans", "Wealth Management", "Private Equity", "Trading"],
+        "rates": {"savings": "4.4% APY (Marcus)", "cd": "4.5% APY", "personal_loan": "7-24%"},
+        "digital": "Marcus by Goldman Sachs App, Apple Card partnership",
+        "notable": "Premier investment bank. Launched consumer brand 'Marcus' in 2016.",
+        "website": "goldmansachs.com"
+    },
+    # ===== UK =====
+    "hsbc": {
+        "full_name": "HSBC Holdings plc", "country": "UK", "hq": "London",
+        "founded": 1865, "type": "Universal Bank", "ownership": "Public (LSE: HSBA)",
+        "swift": "MIDLGB22", "total_assets": "$2.9T", "branches": 3900, "atms": 10000,
+        "employees": 220000, "customers": "40M+ (62 countries)",
+        "services": ["Current & Savings Accounts", "Mortgages", "Credit Cards", "Personal Loans", "International Banking", "Premier Banking", "Jade (Ultra-High Net Worth)", "Trade Finance", "Forex", "Wealth Management", "Islamic Banking (Amanah)"],
+        "rates": {"savings": "1-3.5%", "mortgage": "5-6.5%", "personal_loan": "3.3-21%"},
+        "digital": "HSBC Mobile App, PayMe (Asia), Connected Money, Global Transfers",
+        "notable": "Largest European bank. Founded in Hong Kong. Strong in Asia-Pacific.",
+        "website": "hsbc.com"
+    },
+    "barclays": {
+        "full_name": "Barclays plc", "country": "UK", "hq": "London",
+        "founded": 1690, "type": "Universal Bank", "ownership": "Public (LSE: BARC)",
+        "swift": "BARCGB22", "total_assets": "$1.5T", "branches": 1200, "atms": 3500,
+        "employees": 90000, "customers": "48M+",
+        "services": ["Current & Savings Accounts", "Mortgages", "Credit Cards (Avios)", "Personal Loans", "Investment Banking", "Wealth Management", "Business Banking", "Premier Banking"],
+        "rates": {"savings": "1.5-4.5%", "mortgage": "4.5-6%", "personal_loan": "6-18%"},
+        "digital": "Barclays Mobile App, Barclaycard, Pingit, Open Banking",
+        "notable": "One of oldest banks (est. 1690). Major investment banking arm.",
+        "website": "barclays.co.uk"
+    },
+    "standardchartered": {
+        "full_name": "Standard Chartered plc", "country": "UK", "hq": "London",
+        "founded": 1969, "type": "International Banking", "ownership": "Public (LSE: STAN)",
+        "swift": "SCBLGB2L", "total_assets": "$820B", "branches": 1200, "atms": 5000,
+        "employees": 85000, "customers": "25M+ (59 countries)",
+        "services": ["Priority Banking", "Premium Banking", "Mortgages", "Credit Cards", "Wealth Management", "Trade Finance", "Islamic Banking (Saadiq)", "Forex", "Commercial Banking"],
+        "rates": {"savings": "1-4%", "mortgage": "5-7%", "personal_loan": "6-20%"},
+        "digital": "SC Mobile App, Online Banking, Global Transfers",
+        "notable": "Focused on Asia, Africa & Middle East. Strong in trade finance.",
+        "website": "sc.com"
+    },
+    # ===== UAE =====
+    "emiratesnbd": {
+        "full_name": "Emirates NBD", "country": "UAE", "hq": "Dubai",
+        "founded": 2007, "type": "Commercial Bank", "ownership": "Government of Dubai (55.8%)",
+        "swift": "ABORAEADXXX", "total_assets": "$190B", "branches": 250, "atms": 1100,
+        "employees": 30000, "customers": "17M+",
+        "services": ["Current & Savings", "Home Loans", "Auto Loans", "Credit Cards", "Wealth Management", "Islamic Banking (Emirates Islamic)", "Business Banking", "Treasury", "Trade Finance", "NRI Services"],
+        "rates": {"savings": "0.25-1%", "fd": "4-5.5%", "home_loan": "4-6%", "personal_loan": "5-12%"},
+        "digital": "Emirates NBD App, Liv. (Digital Bank), ENBD X (Wearable Payments)",
+        "notable": "Largest bank in Dubai. Launched Liv., first digital bank in Middle East.",
+        "website": "emiratesnbd.com"
+    },
+    "fab": {
+        "full_name": "First Abu Dhabi Bank (FAB)", "country": "UAE", "hq": "Abu Dhabi",
+        "founded": 2017, "type": "Universal Bank", "ownership": "Abu Dhabi Royal Family",
+        "swift": "ABORAEAD", "total_assets": "$310B", "branches": 80, "atms": 700,
+        "employees": 10000, "customers": "Institutional + Retail",
+        "services": ["Personal Banking", "Business Banking", "Investment Banking", "Wealth Management", "Islamic Banking", "Treasury", "Forex", "Trade Finance"],
+        "rates": {"savings": "0.1-0.75%", "fd": "4-5.25%", "personal_loan": "4.5-10%"},
+        "digital": "FAB Mobile, Digital Banking, Payit",
+        "notable": "Largest bank in UAE and Middle East by assets ($310B).",
+        "website": "bankfab.com"
+    },
+    # ===== SAUDI ARABIA =====
+    "alrajhi": {
+        "full_name": "Al Rajhi Bank", "country": "Saudi Arabia", "hq": "Riyadh",
+        "founded": 1957, "type": "Islamic Bank (Largest in the world)", "ownership": "Al Rajhi Family / Public",
+        "swift": "RJHISARI", "total_assets": "$180B", "branches": 570, "atms": 4900,
+        "employees": 13000, "customers": "12M+",
+        "services": ["Islamic Savings & Current Accounts", "Home Financing (Murabaha)", "Auto Financing", "Personal Financing", "Credit Cards (Sharia-compliant)", "Takaful Insurance", "Investment Funds", "Remittances", "Business Banking"],
+        "rates": {"savings": "profit-sharing", "home_financing": "4-6%", "personal_financing": "5-8%"},
+        "digital": "Al Rajhi Mobile, Al Rajhi Tahweel (Remittances)",
+        "notable": "World's largest Islamic bank. 4900 ATMs across Saudi Arabia.",
+        "website": "alrajhibank.com.sa"
+    },
+    # ===== INDIA =====
+    "sbi": {
+        "full_name": "State Bank of India (SBI)", "country": "India", "hq": "Mumbai",
+        "founded": 1806, "type": "Public Sector Bank", "ownership": "Government of India (57.6%)",
+        "swift": "SBININBB", "total_assets": "$740B", "branches": 22000, "atms": 65000,
+        "employees": 245000, "customers": "500M+",
+        "services": ["Savings & Current Accounts", "Home Loans", "Car Loans", "Education Loans", "Personal Loans", "Credit Cards", "Mutual Funds", "Insurance (SBI Life)", "NRI Services", "Agri Banking", "Government Banking", "Forex"],
+        "rates": {"savings": "2.7-3.5%", "fd": "6-7.5%", "home_loan": "8.5-10%", "personal_loan": "11-15%"},
+        "digital": "YONO App, SBI Net Banking, UPI (BHIM SBI Pay)",
+        "notable": "India's largest bank. 500M+ customers. Branches in 31 countries.",
+        "website": "sbi.co.in"
+    },
+    "hdfc": {
+        "full_name": "HDFC Bank", "country": "India", "hq": "Mumbai",
+        "founded": 1994, "type": "Private Sector Bank", "ownership": "Public (NSE: HDFCBANK)",
+        "swift": "HABORINBBXXX", "total_assets": "$570B", "branches": 8500, "atms": 20000,
+        "employees": 180000, "customers": "85M+",
+        "services": ["Savings & Current Accounts", "Home Loans", "Car Loans", "Personal Loans", "Credit Cards (Regalia, Millennia)", "Wealth Management", "NRI Services", "SmartBUY (Offers)", "Business Banking", "Forex"],
+        "rates": {"savings": "3-3.5%", "fd": "6.5-7.75%", "home_loan": "8.5-9.5%", "personal_loan": "10.5-21%"},
+        "digital": "HDFC Mobile App, PayZapp, SmartBUY, Net Banking, UPI",
+        "notable": "India's largest private bank. Known for best digital banking.",
+        "website": "hdfcbank.com"
+    },
+    # ===== CHINA =====
+    "icbc": {
+        "full_name": "Industrial and Commercial Bank of China (ICBC)", "country": "China", "hq": "Beijing",
+        "founded": 1984, "type": "State-owned Commercial Bank", "ownership": "Government of China",
+        "swift": "ICBKCNBJ", "total_assets": "$6.3T", "branches": 16000, "atms": 79000,
+        "employees": 430000, "customers": "720M+",
+        "services": ["Savings & Current", "Loans", "Credit Cards", "Wealth Management", "Investment Banking", "Insurance", "Forex", "Trade Finance", "E-Banking"],
+        "rates": {"savings": "0.2-0.45%", "fd": "1.5-2.75%", "mortgage": "3.7-4.9%"},
+        "digital": "ICBC Mobile, e-ICBC, WeChat Pay integration",
+        "notable": "World's LARGEST bank by total assets ($6.3 TRILLION). 720M customers.",
+        "website": "icbc.com.cn"
+    },
+    # ===== GERMANY =====
+    "deutschebank": {
+        "full_name": "Deutsche Bank AG", "country": "Germany", "hq": "Frankfurt",
+        "founded": 1870, "type": "Universal Bank", "ownership": "Public (FWB: DBK)",
+        "swift": "DEUTDEFF", "total_assets": "$1.4T", "branches": 1400, "atms": 6000,
+        "employees": 90000, "customers": "28M+",
+        "services": ["Personal Banking", "Investment Banking", "Asset Management (DWS)", "Wealth Management", "Corporate Banking", "Transaction Banking", "Forex", "Securities"],
+        "rates": {"savings": "0.01-2%", "mortgage": "3-4.5%", "personal_loan": "4-12%"},
+        "digital": "Deutsche Bank Mobile, Postbank (subsidiary)",
+        "notable": "Germany's largest bank. Major investment banking globally.",
+        "website": "db.com"
+    },
+    # ===== CANADA =====
+    "rbc": {
+        "full_name": "Royal Bank of Canada (RBC)", "country": "Canada", "hq": "Toronto",
+        "founded": 1869, "type": "Universal Bank", "ownership": "Public (TSX: RY)",
+        "swift": "ROYCCAT2", "total_assets": "$1.4T CAD", "branches": 1300, "atms": 4500,
+        "employees": 92000, "customers": "17M+",
+        "services": ["Chequing & Savings", "Mortgages", "Credit Cards (Avion)", "Auto Loans", "Investment (RBC Direct Investing)", "Wealth Management", "Business Banking", "Insurance"],
+        "rates": {"savings": "0.5-4.65%", "mortgage": "5-7%", "personal_loan": "7-13%"},
+        "digital": "RBC Mobile, Interac e-Transfer, RBC InvestEase",
+        "notable": "Canada's largest bank by market cap and assets.",
+        "website": "rbc.com"
+    },
+    # ===== AUSTRALIA =====
+    "commbank": {
+        "full_name": "Commonwealth Bank of Australia (CBA)", "country": "Australia", "hq": "Sydney",
+        "founded": 1911, "type": "Universal Bank", "ownership": "Public (ASX: CBA)",
+        "swift": "CTBAAU2S", "total_assets": "$1.1T AUD", "branches": 800, "atms": 3000,
+        "employees": 53000, "customers": "17M+",
+        "services": ["Savings & Transaction Accounts", "Home Loans", "Personal Loans", "Credit Cards", "Investment", "Insurance", "Superannuation", "Business Banking", "CommSec (Online Trading)"],
+        "rates": {"savings": "0.5-5.35%", "home_loan": "6-7.5%", "personal_loan": "7-18%"},
+        "digital": "CommBank App, NetBank, Cardless Cash, Tap & Pay",
+        "notable": "Australia's largest bank. Award-winning mobile app.",
+        "website": "commbank.com.au"
+    },
+    # ===== SINGAPORE =====
+    "dbs": {
+        "full_name": "DBS Bank", "country": "Singapore", "hq": "Singapore",
+        "founded": 1968, "type": "Universal Bank", "ownership": "Public (SGX: D05) / Temasek Holdings",
+        "swift": "DBSSSGSG", "total_assets": "$690B", "branches": 280, "atms": 1100,
+        "employees": 36000, "customers": "25M+",
+        "services": ["Savings & Current", "Home Loans", "Personal Loans", "Credit Cards", "Wealth Management", "DBS Treasures", "DBS Private Bank", "Business Banking", "Trade Finance", "Forex"],
+        "rates": {"savings": "0.05-3.5%", "fd": "3-3.75%", "home_loan": "3-4%", "personal_loan": "3.5-9%"},
+        "digital": "DBS digibank, PayLah!, DBS NAV Planner, AI-powered insights",
+        "notable": "Named 'World's Best Bank' by Euromoney & Global Finance (multiple years).",
+        "website": "dbs.com"
+    },
+    # ===== JAPAN =====
+    "mufg": {
+        "full_name": "MUFG Bank (Mitsubishi UFJ Financial Group)", "country": "Japan", "hq": "Tokyo",
+        "founded": 1880, "type": "Universal Bank", "ownership": "Public (TYO: 8306)",
+        "swift": "BOTKJPJT", "total_assets": "$3.1T", "branches": 2300, "atms": 8000,
+        "employees": 150000, "customers": "40M+",
+        "services": ["Savings & Current", "Home Loans", "Personal Loans", "Credit Cards", "Investment Banking", "Asset Management", "Trust Banking", "Forex", "Trade Finance"],
+        "rates": {"savings": "0.001-0.1%", "fd": "0.01-0.3%", "mortgage": "0.3-1.5%"},
+        "digital": "MUFG App, Direct Banking",
+        "notable": "Japan's largest bank. 5th largest in the world by assets.",
+        "website": "bk.mufg.jp"
+    },
+    # ===== SWITZERLAND =====
+    "ubs": {
+        "full_name": "UBS Group AG", "country": "Switzerland", "hq": "Zurich",
+        "founded": 1862, "type": "Investment Bank & Wealth Management", "ownership": "Public (SIX: UBSG)",
+        "swift": "UBSWCHZH80A", "total_assets": "$1.7T", "branches": 800, "atms": 2000,
+        "employees": 115000, "customers": "Wealth & Institutional",
+        "services": ["Private Banking", "Wealth Management", "Investment Banking", "Asset Management", "Personal Banking", "Mortgages", "Forex", "Securities"],
+        "rates": {"savings": "0-1.5%", "mortgage": "2-4%"},
+        "digital": "UBS Mobile, UBS Digital Banking, UBS Manage",
+        "notable": "World's largest wealth manager. Merged with Credit Suisse in 2023.",
+        "website": "ubs.com"
+    },
+    # ===== BRAZIL =====
+    "itau": {
+        "full_name": "Itau Unibanco", "country": "Brazil", "hq": "Sao Paulo",
+        "founded": 1924, "type": "Commercial Bank", "ownership": "Public (B3: ITUB4)",
+        "swift": "ITAUBRSP", "total_assets": "$460B", "branches": 3800, "atms": 40000,
+        "employees": 100000, "customers": "60M+",
+        "services": ["Savings & Checking", "Credit Cards", "Personal Loans", "Mortgages", "Investment", "Insurance", "Business Banking", "Iti (Digital Bank)"],
+        "rates": {"savings": "6-8%", "personal_loan": "20-60%", "mortgage": "10-14%"},
+        "digital": "Itau App, Iti (Digital Wallet), PIX payments",
+        "notable": "Largest private bank in Latin America.",
+        "website": "itau.com.br"
+    },
+    # ===== TURKEY =====
+    "isbank": {
+        "full_name": "Turkiye Is Bankasi (Isbank)", "country": "Turkey", "hq": "Istanbul",
+        "founded": 1924, "type": "Commercial Bank", "ownership": "Public / CHP Foundation",
+        "swift": "ABORISBOEXXX", "total_assets": "$110B", "branches": 1300, "atms": 6500,
+        "employees": 25000, "customers": "20M+",
+        "services": ["Savings & Current", "Credit Cards (Maximum)", "Home Loans", "Auto Loans", "Investment Funds", "Insurance", "Business Banking", "Forex"],
+        "rates": {"savings": "15-35%", "fd": "30-50%", "home_loan": "25-40%", "personal_loan": "30-55%"},
+        "digital": "Isbank Mobile, Maximum Mobile, Internet Banking",
+        "notable": "Turkey's largest private bank. Founded by Ataturk.",
+        "website": "isbank.com.tr"
+    },
+    # ===== MALAYSIA =====
+    "maybank": {
+        "full_name": "Malayan Banking Berhad (Maybank)", "country": "Malaysia", "hq": "Kuala Lumpur",
+        "founded": 1960, "type": "Universal Bank", "ownership": "Public / PNB (Malaysia Sovereign Fund)",
+        "swift": "MABORMY2", "total_assets": "$230B", "branches": 2200, "atms": 3300,
+        "employees": 40000, "customers": "22M+",
+        "services": ["Savings & Current", "Home Financing", "Auto Financing", "Personal Financing", "Credit Cards", "Islamic Banking (Maybank Islamic)", "Wealth Management", "Insurance (Etiqa)", "Forex"],
+        "rates": {"savings": "1.25-2.5%", "fd": "2.5-3.5%", "home_loan": "3.5-5%", "personal_loan": "5-12%"},
+        "digital": "MAE App, Maybank2u, QRPay",
+        "notable": "Largest bank in Southeast Asia by assets.",
+        "website": "maybank.com"
+    },
+    # ===== SOUTH AFRICA =====
+    "standardbank": {
+        "full_name": "Standard Bank Group", "country": "South Africa", "hq": "Johannesburg",
+        "founded": 1862, "type": "Universal Bank", "ownership": "Public (JSE: SBK) / ICBC (20%)",
+        "swift": "SBZAZAJJ", "total_assets": "$180B", "branches": 1100, "atms": 8500,
+        "employees": 50000, "customers": "15M+",
+        "services": ["Current & Savings", "Home Loans", "Vehicle Finance", "Credit Cards", "Personal Loans", "Wealth Management", "Business Banking", "CIB", "Forex", "Insurance"],
+        "rates": {"savings": "3-6%", "home_loan": "11-14%", "personal_loan": "15-25%"},
+        "digital": "Standard Bank App, Internet Banking, Instant Money",
+        "notable": "Africa's largest bank by assets. 20% owned by China's ICBC.",
+        "website": "standardbank.co.za"
+    },
+    # ===== QATAR =====
+    "qnb": {
+        "full_name": "Qatar National Bank (QNB)", "country": "Qatar", "hq": "Doha",
+        "founded": 1964, "type": "Commercial Bank", "ownership": "Qatar Investment Authority (50%)",
+        "swift": "QNBAQA22", "total_assets": "$320B", "branches": 1100, "atms": 1800,
+        "employees": 28000, "customers": "25M+ (31 countries)",
+        "services": ["Savings & Current", "Home Finance", "Auto Loans", "Credit Cards", "Wealth Management", "Islamic Banking (QNB Al Islami)", "Trade Finance", "Forex"],
+        "rates": {"savings": "0.25-1.5%", "fd": "4-5%", "home_loan": "3.5-5.5%"},
+        "digital": "QNB Mobile, QNB Online, QNB Pay",
+        "notable": "Largest bank in Middle East & Africa. Present in 31 countries.",
+        "website": "qnb.com"
+    },
+    # ===== DIGITAL/NEO BANKS =====
+    "revolut": {
+        "full_name": "Revolut Ltd", "country": "UK (Global)", "hq": "London",
+        "founded": 2015, "type": "Digital Bank / Neobank", "ownership": "Private (valued at $33B)",
+        "swift": "REVOGB21", "total_assets": "$20B+", "branches": 0, "atms": 0,
+        "employees": 8000, "customers": "35M+ (38 countries)",
+        "services": ["Multi-currency Account", "Currency Exchange (150+ currencies)", "Crypto Trading", "Stock Trading", "Savings Vaults", "Bill Splitting", "Travel Insurance", "Virtual Cards", "Junior Accounts", "Business Accounts"],
+        "rates": {"savings": "3-5% (Flexible)", "crypto": "1.99% fee", "stock": "Commission-free"},
+        "digital": "Revolut App only — fully digital, no branches",
+        "notable": "Europe's most valuable fintech. 150+ currencies at interbank rates.",
+        "website": "revolut.com"
+    },
+    "wise": {
+        "full_name": "Wise plc (formerly TransferWise)", "country": "UK (Global)", "hq": "London",
+        "founded": 2011, "type": "Digital Financial Services", "ownership": "Public (LSE: WISE)",
+        "swift": "TRWIGB22", "total_assets": "$12B+", "branches": 0, "atms": 0,
+        "employees": 5500, "customers": "16M+ (80 countries)",
+        "services": ["Multi-currency Account", "International Transfers (50+ currencies)", "Debit Card", "Business Account", "Wise Platform (API for banks)", "Interest on Balances"],
+        "rates": {"transfer_fee": "0.3-2% (cheapest international transfers)", "exchange": "Mid-market rate (no markup)"},
+        "digital": "Wise App, Wise Business, Wise Platform API",
+        "notable": "Cheapest international money transfers. Moves $12B/month.",
+        "website": "wise.com"
+    },
+    "nubank": {
+        "full_name": "Nu Holdings (Nubank)", "country": "Brazil", "hq": "Sao Paulo",
+        "founded": 2013, "type": "Digital Bank / Neobank", "ownership": "Public (NYSE: NU)",
+        "swift": "N/A", "total_assets": "$25B", "branches": 0, "atms": 0,
+        "employees": 8000, "customers": "90M+ (Brazil, Mexico, Colombia)",
+        "services": ["Digital Checking", "Credit Cards (no annual fee)", "Personal Loans", "Investment", "Insurance", "Crypto", "Business Accounts"],
+        "rates": {"savings": "100% CDI (~13%)", "credit_card": "No annual fee", "personal_loan": "2-14%/month"},
+        "digital": "Nubank App — fully digital",
+        "notable": "World's largest neobank by customers (90M+). 5th largest bank in Latin America.",
+        "website": "nubank.com.br"
+    },
+}
+
+# =============================================
+# EXCHANGE RATES DATABASE
+# =============================================
+
+EXCHANGE_RATES = {
+    "USD": {"PKR": 278.50, "EUR": 0.92, "GBP": 0.79, "AED": 3.67, "SAR": 3.75, "INR": 83.50, "SGD": 1.34, "CAD": 1.36, "AUD": 1.53, "JPY": 149.80, "CNY": 7.24, "TRY": 32.50, "MYR": 4.72, "ZAR": 18.20, "QAR": 3.64, "BRL": 5.05, "CHF": 0.88},
+    "PKR": {"USD": 0.00359, "EUR": 0.0033, "GBP": 0.00284, "AED": 0.01318, "SAR": 0.01347},
+    "EUR": {"USD": 1.087, "GBP": 0.86, "PKR": 302.75, "AED": 3.99, "INR": 90.75},
+    "GBP": {"USD": 1.266, "EUR": 1.163, "PKR": 352.50, "AED": 4.64, "INR": 105.70},
+}
+
+# =============================================
+# BANKING KNOWLEDGE BASE
+# =============================================
+
+BANKING_KNOWLEDGE = {
+    "account_types": "Common bank account types worldwide:\n- Savings Account: Earns interest, limited transactions, best for storing money\n- Current/Checking Account: Unlimited transactions, little/no interest, for daily use\n- Fixed Deposit (FD/CD): Locked for a period, higher interest rates\n- Business Account: For companies, higher limits, additional features\n- Islamic Account: Sharia-compliant, profit-sharing instead of interest\n- NRI/NRE Account: For non-residents, supports home currency\n- Joint Account: Shared between 2+ people\n- Minor/Student Account: For young people, lower fees\n- Wealth/Premium Account: Higher minimums, dedicated advisor, perks",
+
+    "swift_iban": "SWIFT/BIC Code: 8-11 character code identifying a bank globally (e.g., CHASUS33 for Chase USA). Used for international wire transfers.\n\nIBAN (International Bank Account Number): Up to 34 characters. Used mainly in Europe, Middle East, and some Asian countries.\n- Format: Country code (2 letters) + Check digits (2) + Bank code + Account number\n- Example: GB29 NWBK 6016 1331 9268 19 (UK)\n- Pakistan IBAN: PK + 2 check digits + 4 bank code + 16 account number\n\nNot all countries use IBAN. USA, Canada, Australia use routing/transit numbers instead.",
+
+    "loan_types": "Types of bank loans:\n- Personal Loan: Unsecured, 7-25% APR, 1-7 years\n- Home Loan/Mortgage: Secured by property, 3-18% APR, 10-30 years\n- Auto/Car Loan: Secured by vehicle, 4-20% APR, 1-7 years\n- Education Loan: For students, 4-12% APR, deferred repayment\n- Business Loan: For businesses, 6-20% APR, 1-10 years\n- Gold Loan: Secured by gold, 7-15% APR, 6-36 months\n- Agricultural Loan: For farmers, subsidized rates\n- Overdraft: Credit line on current account\n- Islamic Financing: Murabaha (cost-plus), Ijarah (lease), Musharakah (partnership)",
+
+    "credit_score": "Credit Score Guide:\n- 800-850: Excellent — best rates, instant approvals\n- 750-799: Very Good — most loans approved easily\n- 700-749: Good — approved for most products\n- 650-699: Fair — higher rates, some restrictions\n- 600-649: Poor — limited options, high rates\n- Below 600: Very Poor — may need secured products\n\nFactors: Payment history (35%), credit utilization (30%), length of history (15%), credit mix (10%), new inquiries (10%)\n\nTips to improve: Pay on time, keep utilization below 30%, don't close old accounts, limit new applications.",
+
+    "islamic_banking": "Islamic Banking Principles:\n- No Riba (Interest): Money cannot earn money directly\n- Profit & Loss Sharing: Bank and customer share risks\n- Asset-backed: All transactions must be tied to real assets\n- No speculation (Gharar): Contracts must be clear and certain\n- Ethical: No financing for haram activities (alcohol, gambling, etc.)\n\nCommon Products:\n- Murabaha: Cost-plus financing (bank buys, sells at markup)\n- Ijarah: Leasing (bank buys asset, leases to customer)\n- Musharakah: Joint venture (both parties invest and share profits)\n- Mudarabah: Investment partnership (one provides capital, other manages)\n- Sukuk: Islamic bonds (asset-backed securities)\n- Takaful: Islamic insurance (mutual protection)\n\nLargest Islamic Banks: Al Rajhi (Saudi), Meezan (Pakistan), Kuwait Finance House, Dubai Islamic Bank",
+
+    "fraud_prevention": "Banking Fraud Prevention Tips:\n1. Never share OTP, PIN, or passwords with anyone — banks never ask for these\n2. Enable 2-factor authentication on all accounts\n3. Check statements regularly for unauthorized transactions\n4. Use strong, unique passwords for banking apps\n5. Avoid public WiFi for banking transactions\n6. Report lost cards immediately — block within minutes\n7. Be wary of phishing emails/SMS pretending to be your bank\n8. Set transaction alerts for every debit\n9. Use virtual cards for online shopping\n10. Keep banking apps updated to latest version",
+
+    "investment_basics": "Investment Options through Banks:\n- Fixed Deposits (FD/CD): Guaranteed returns, 1-5 year terms, low risk\n- Mutual Funds: Professionally managed, diversified, medium risk\n- Government Bonds: Very safe, fixed coupon, 2-30 years\n- Stocks/Equities: High potential returns, high risk, through demat accounts\n- Gold: Physical or digital, hedge against inflation\n- Real Estate: Through REITs or direct property loans\n- Pension/Retirement Funds: Long-term, tax benefits\n- Sukuk: Islamic bonds, asset-backed\n\nRisk Levels: FD < Bonds < Gold < Mutual Funds < Stocks < Crypto\n\n50/30/20 Rule: 50% needs, 30% wants, 20% savings/investment",
+}
+
+
+# =============================================
+# TOOL FUNCTIONS (continued)
+# =============================================
 # =============================================
 
 CUSTOMERS = {
@@ -1112,6 +1632,101 @@ def kyc_verification(account_id, action="check_status"):
 
 
 # =============================================
+# UNIVERSAL BANK KNOWLEDGE TOOLS
+# =============================================
+
+def lookup_bank_info(bank_name, info_type="full"):
+    key = bank_name.lower().replace(" ", "").replace("bank", "").replace("limited", "").strip()
+    # Try exact match first, then partial
+    bank = WORLD_BANKS.get(key)
+    if not bank:
+        for k, v in WORLD_BANKS.items():
+            if key in k or key in v["full_name"].lower():
+                bank = v
+                break
+    if not bank:
+        available = ", ".join(b["full_name"] for b in WORLD_BANKS.values())
+        return f"Bank '{bank_name}' not found in our database.\n\nAvailable banks:\n{available}"
+
+    it = info_type.lower()
+    if it == "rates":
+        rates = bank.get("rates", {})
+        lines = [f"INTEREST/PROFIT RATES — {bank['full_name']}"]
+        for k, v in rates.items():
+            lines.append(f"  {k.replace('_', ' ').title()}: {v}")
+        return "\n".join(lines)
+    elif it == "services":
+        svcs = bank.get("services", [])
+        return f"SERVICES — {bank['full_name']}\n" + "\n".join(f"  • {s}" for s in svcs)
+    elif it == "digital":
+        return f"DIGITAL BANKING — {bank['full_name']}\n{bank.get('digital', 'N/A')}"
+    elif it == "swift":
+        return f"SWIFT/BIC — {bank['full_name']}: {bank.get('swift', 'N/A')}"
+    else:
+        lines = [
+            f"{'='*50}",
+            f"  {bank['full_name']}",
+            f"{'='*50}",
+            f"Country: {bank.get('country', 'N/A')}",
+            f"Headquarters: {bank.get('hq', 'N/A')}",
+            f"Founded: {bank.get('founded', 'N/A')}",
+            f"Type: {bank.get('type', 'N/A')}",
+            f"Ownership: {bank.get('ownership', 'N/A')}",
+            f"SWIFT/BIC: {bank.get('swift', 'N/A')}",
+            f"Total Assets: {bank.get('total_assets', 'N/A')}",
+            f"Branches: {bank.get('branches', 'N/A')}",
+            f"ATMs: {bank.get('atms', 'N/A')}",
+            f"Employees: {bank.get('employees', 'N/A')}",
+            f"Customers: {bank.get('customers', 'N/A')}",
+            f"Website: {bank.get('website', 'N/A')}",
+            f"Notable: {bank.get('notable', 'N/A')}",
+            f"\nServices:",
+        ]
+        for s in bank.get("services", []):
+            lines.append(f"  • {s}")
+        lines.append(f"\nDigital: {bank.get('digital', 'N/A')}")
+        rates = bank.get("rates", {})
+        if rates:
+            lines.append("\nRates:")
+            for k, v in rates.items():
+                lines.append(f"  {k.replace('_', ' ').title()}: {v}")
+        return "\n".join(lines)
+
+
+def get_exchange_rates(from_currency, to_currency="all"):
+    fc = from_currency.upper()
+    if fc not in EXCHANGE_RATES:
+        return f"Currency '{from_currency}' not in our database. Available: {', '.join(EXCHANGE_RATES.keys())}"
+
+    rates = EXCHANGE_RATES[fc]
+    tc = to_currency.upper()
+
+    if tc == "ALL":
+        lines = [f"EXCHANGE RATES FROM {fc}:"]
+        for cur, rate in rates.items():
+            lines.append(f"  1 {fc} = {rate} {cur}")
+        lines.append(f"\n(Rates are indicative mid-market rates, updated periodically)")
+        return "\n".join(lines)
+    elif tc in rates:
+        return f"1 {fc} = {rates[tc]} {tc}\n(Indicative mid-market rate)"
+    else:
+        return f"Rate for {fc} → {tc} not available. Available targets from {fc}: {', '.join(rates.keys())}"
+
+
+def banking_knowledge(topic):
+    t = topic.lower().replace(" ", "_")
+    info = BANKING_KNOWLEDGE.get(t)
+    if not info:
+        for k, v in BANKING_KNOWLEDGE.items():
+            if t in k or k in t:
+                info = v
+                break
+    if not info:
+        return f"Topic '{topic}' not found. Available: {', '.join(BANKING_KNOWLEDGE.keys())}"
+    return info
+
+
+# =============================================
 # TOOL ROUTER
 # =============================================
 
@@ -1133,6 +1748,9 @@ def run_tool(name, arguments):
         "bank_staff_insights": lambda a: bank_staff_insights(a["insight_type"], a.get("region", "global")),
         "marketing_offers": lambda a: marketing_offers(a["account_id"]),
         "kyc_verification": lambda a: kyc_verification(a["account_id"], a.get("action", "check_status")),
+        "lookup_bank_info": lambda a: lookup_bank_info(a["bank_name"], a.get("info_type", "full")),
+        "get_exchange_rates": lambda a: get_exchange_rates(a["from_currency"], a.get("to_currency", "all")),
+        "banking_knowledge": lambda a: banking_knowledge(a["topic"]),
     }
     fn = tool_map.get(name)
     if fn:
@@ -1217,6 +1835,9 @@ class handler(BaseHTTPRequestHandler):
                     "bank_staff_insights": "Staff Intelligence",
                     "marketing_offers": "Offers Engine",
                     "kyc_verification": "KYC Verification",
+                    "lookup_bank_info": "Bank Database",
+                    "get_exchange_rates": "Exchange Rates",
+                    "banking_knowledge": "Banking Knowledge",
                 }
                 response["tool_used"] = tool_labels.get(tool_used, tool_used)
 
