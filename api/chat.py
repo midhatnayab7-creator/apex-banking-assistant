@@ -293,7 +293,8 @@ class handler(BaseHTTPRequestHandler):
             self._send_json(200, response)
 
         except Exception as e:
-            self._send_json(500, {"error": str(e)})
+            import traceback
+            self._send_json(500, {"error": str(e), "trace": traceback.format_exc()})
 
     def _send_json(self, status, data):
         self.send_response(status)
