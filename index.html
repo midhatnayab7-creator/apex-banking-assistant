@@ -3,523 +3,1060 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Banking AI Assistant</title>
+    <title>Apex International Bank</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg-primary: #0a1628;
-            --bg-secondary: #0f1f3d;
-            --bg-tertiary: #060e1f;
-            --bg-input: #162444;
-            --text-primary: #e8edf5;
-            --text-secondary: #8899b8;
-            --accent: #0ea5e9;
-            --accent-hover: #0284c7;
-            --accent-glow: rgba(14, 165, 233, 0.15);
-            --gold: #f59e0b;
-            --gold-glow: rgba(245, 158, 11, 0.12);
-            --border: #1e3a5f;
-            --success: #10b981;
-            --danger: #ef4444;
-            --purple: #8b5cf6;
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --navy:#0c1b33;--navy-light:#15294d;--navy-mid:#1a3158;
+            --white:#ffffff;--off-white:#f7f8fa;--gray-50:#f2f3f7;--gray-100:#e8eaef;--gray-200:#d1d5de;--gray-300:#a3aabb;--gray-400:#7a8299;--gray-500:#5a6178;--gray-600:#3d4354;
+            --blue:#1a6bff;--blue-light:#e8f0ff;--blue-dark:#0f4fc9;
+            --green:#0d9f6e;--green-light:#e6f7f1;--green-dark:#087a55;
+            --red:#dc3545;--red-light:#fde8ea;
+            --amber:#d97706;--amber-light:#fef3c7;
+            --gold:#b8860b;--gold-light:#faf5e6;
+            --shadow-sm:0 1px 3px rgba(12,27,51,0.06);
+            --shadow-md:0 4px 12px rgba(12,27,51,0.08);
+            --shadow-lg:0 8px 30px rgba(12,27,51,0.12);
+            --shadow-xl:0 20px 60px rgba(12,27,51,0.15);
+            --radius:10px;--radius-lg:14px;--radius-xl:20px;
         }
-        body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--navy);-webkit-font-smoothing:antialiased}
+
+        /* ═══════ LOGIN SCREEN ═══════ */
+        .login-screen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--navy);overflow:hidden}
+        .login-screen.hidden{display:none}
+        .login-bg{position:absolute;inset:0;background:
+            radial-gradient(ellipse 80% 60% at 20% 100%,rgba(26,107,255,0.15),transparent),
+            radial-gradient(ellipse 60% 50% at 80% 20%,rgba(13,159,110,0.1),transparent),
+            linear-gradient(160deg,#0c1b33 0%,#15294d 50%,#0c1b33 100%)}
+        .login-pattern{position:absolute;inset:0;opacity:0.03;background-image:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.5) 60px,rgba(255,255,255,0.5) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.5) 60px,rgba(255,255,255,0.5) 61px)}
+        .login-card{position:relative;z-index:1;width:420px;max-width:92vw;animation:loginIn 0.6s ease}
+        @keyframes loginIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .login-logo{text-align:center;margin-bottom:40px}
+        .login-logo-mark{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:linear-gradient(135deg,var(--blue),var(--green));border-radius:14px;margin-bottom:16px}
+        .login-logo-mark span{font-family:'DM Serif Display',serif;font-size:22px;color:white;letter-spacing:-0.5px}
+        .login-logo h1{font-family:'DM Serif Display',serif;font-size:28px;color:white;letter-spacing:-0.5px;margin-bottom:4px}
+        .login-logo p{color:var(--gray-300);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
+        .login-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-xl);padding:36px;backdrop-filter:blur(20px)}
+        .login-box h2{font-size:18px;color:white;margin-bottom:4px;font-weight:600}
+        .login-box .login-sub{color:var(--gray-300);font-size:13px;margin-bottom:24px}
+        .login-field{margin-bottom:16px}
+        .login-field label{display:block;font-size:12px;color:var(--gray-300);margin-bottom:6px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase}
+        .login-field select,.login-field input{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);color:white;font-size:14px;font-family:inherit;outline:none;transition:all 0.2s;appearance:none;-webkit-appearance:none}
+        .login-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a3aabb' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+        .login-field select:focus,.login-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,107,255,0.15)}
+        .login-field select option{background:var(--navy);color:white}
+        .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border:none;border-radius:var(--radius);color:white;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:all 0.2s;margin-top:8px;letter-spacing:0.3px}
+        .login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,107,255,0.35)}
+        .login-footer{text-align:center;margin-top:24px;color:var(--gray-400);font-size:12px;line-height:1.6}
+        .login-footer strong{color:var(--gray-300)}
+
+        /* ═══════ APP LAYOUT ═══════ */
+        .app{display:flex;height:100vh;opacity:0;transition:opacity 0.4s}
+        .app.visible{opacity:1}
+
+        /* ─── Sidebar ─── */
+        .sidebar{width:260px;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width 0.3s}
+        .sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+        .sidebar-brand-row{display:flex;align-items:center;gap:12px}
+        .sb-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--green));border-radius:10px;display:flex;align-items:center;justify-content:center}
+        .sb-logo span{font-family:'DM Serif Display',serif;font-size:15px;color:white}
+        .sb-name{font-family:'DM Serif Display',serif;font-size:17px;color:white;letter-spacing:-0.3px}
+        .sb-sub{font-size:10px;color:var(--gray-400);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+        .sidebar-nav{flex:1;overflow-y:auto;padding:16px 12px}
+        .sidebar-nav::-webkit-scrollbar{width:0}
+        .nav-section{margin-bottom:20px}
+        .nav-section-label{font-size:10px;color:var(--gray-400);letter-spacing:1.5px;text-transform:uppercase;padding:0 8px 8px;font-weight:600}
+        .nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius);cursor:pointer;transition:all 0.15s;color:var(--gray-300);font-size:13.5px;font-weight:500;margin-bottom:2px;position:relative}
+        .nav-item:hover{background:rgba(255,255,255,0.05);color:white}
+        .nav-item.active{background:rgba(26,107,255,0.12);color:white}
+        .nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--blue);border-radius:0 3px 3px 0}
+        .nav-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0.7}
+        .nav-item.active .nav-icon{opacity:1}
+        .nav-icon svg{width:18px;height:18px}
+        .sidebar-user{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px}
+        .su-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#4f8fff);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0}
+        .su-info{flex:1;min-width:0}
+        .su-name{font-size:13px;color:white;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .su-acc{font-size:11px;color:var(--gray-400)}
+        .su-logout{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:none;color:var(--gray-400);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0}
+        .su-logout:hover{border-color:var(--red);color:var(--red);background:rgba(220,53,69,0.08)}
+        .su-logout svg{width:16px;height:16px}
+
+        /* ─── Main ─── */
+        .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+        /* ─── Topbar ─── */
+        .topbar{height:64px;background:var(--white);border-bottom:1px solid var(--gray-100);display:flex;align-items:center;padding:0 28px;flex-shrink:0;gap:16px}
+        .topbar-burger{display:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--gray-100);background:var(--white);cursor:pointer;align-items:center;justify-content:center;color:var(--navy);flex-shrink:0}
+        .topbar-burger svg{width:20px;height:20px}
+        .topbar-title{flex:1}
+        .topbar-title h2{font-size:18px;font-weight:700;letter-spacing:-0.3px}
+        .topbar-title p{font-size:12px;color:var(--gray-400);margin-top:1px}
+        .topbar-actions{display:flex;align-items:center;gap:10px}
+        .tb-btn{height:38px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--gray-100);background:var(--white);color:var(--navy);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;white-space:nowrap}
+        .tb-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+        .tb-btn svg{width:16px;height:16px}
+        .tb-btn.primary{background:var(--green);border-color:var(--green);color:white}
+        .tb-btn.primary:hover{background:var(--green-dark);border-color:var(--green-dark);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+        .tb-icon{width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--gray-100);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:all 0.15s;position:relative}
+        .tb-icon:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+        .tb-icon svg{width:18px;height:18px}
+        .tb-icon .notif-dot{position:absolute;top:8px;right:8px;width:7px;height:7px;background:var(--red);border-radius:50%;border:2px solid var(--white)}
+
+        /* ─── Content Area ─── */
+        .content{flex:1;overflow-y:auto;padding:28px;scroll-behavior:smooth}
+        .content::-webkit-scrollbar{width:6px}
+        .content::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:3px}
+
+        /* ═══════ PAGE: DASHBOARD ═══════ */
+        .page{display:none;animation:pageIn 0.3s ease}
+        .page.active{display:block}
+        @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+        .dash-greeting{margin-bottom:28px}
+        .dash-greeting h1{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:-0.5px;margin-bottom:4px}
+        .dash-greeting p{color:var(--gray-400);font-size:14px}
+
+        .dash-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:28px}
+        .dash-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:22px;transition:all 0.2s;position:relative;overflow:hidden}
+        .dash-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+        .dc-label{font-size:12px;color:var(--gray-400);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+        .dc-label svg{width:14px;height:14px}
+        .dc-value{font-family:'DM Serif Display',serif;font-size:28px;letter-spacing:-0.5px;margin-bottom:4px}
+        .dc-sub{font-size:12px;color:var(--gray-400)}
+        .dc-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;margin-top:8px}
+        .dc-badge.up{background:var(--green-light);color:var(--green)}
+        .dc-badge.down{background:var(--red-light);color:var(--red)}
+        .dc-badge.warn{background:var(--amber-light);color:var(--amber)}
+        .dc-accent{position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:0.06;transform:translate(20%,-20%)}
+        .dc-accent.blue{background:var(--blue)}
+        .dc-accent.green{background:var(--green)}
+        .dc-accent.amber{background:var(--amber)}
+        .dc-accent.red{background:var(--red)}
+
+        /* Quick Actions */
+        .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+        .section-header h3{font-size:16px;font-weight:700;letter-spacing:-0.2px}
+        .section-header a{font-size:13px;color:var(--blue);font-weight:500;cursor:pointer;text-decoration:none}
+        .section-header a:hover{text-decoration:underline}
+
+        .quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:28px}
+        .quick-item{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:16px 14px;cursor:pointer;transition:all 0.2s;text-align:center}
+        .quick-item:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+        .qi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:18px}
+        .qi-icon.blue{background:var(--blue-light);color:var(--blue)}
+        .qi-icon.green{background:var(--green-light);color:var(--green)}
+        .qi-icon.red{background:var(--red-light);color:var(--red)}
+        .qi-icon.amber{background:var(--amber-light);color:var(--amber)}
+        .qi-icon.gold{background:var(--gold-light);color:var(--gold)}
+        .quick-item h4{font-size:12.5px;font-weight:600;color:var(--navy);line-height:1.3}
+
+        /* Recent Transactions Mini */
+        .txn-table{width:100%;border-collapse:collapse}
+        .txn-table th{text-align:left;font-size:11px;color:var(--gray-400);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;padding:10px 14px;border-bottom:2px solid var(--gray-100)}
+        .txn-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--gray-50);vertical-align:middle}
+        .txn-table tr:last-child td{border-bottom:none}
+        .txn-table tr:hover td{background:var(--gray-50)}
+        .txn-desc{font-weight:500;color:var(--navy)}
+        .txn-cat{font-size:11px;color:var(--gray-400);margin-top:2px}
+        .txn-amount{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+        .txn-amount.credit{color:var(--green)}
+        .txn-amount.debit{color:var(--navy)}
+        .txn-date{color:var(--gray-400);font-size:12px;white-space:nowrap}
+        .card-wrap{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px}
+        .card-wrap-header{padding:18px 20px;border-bottom:1px solid var(--gray-50);display:flex;align-items:center;justify-content:space-between}
+        .card-wrap-header h3{font-size:15px;font-weight:700}
+        .card-wrap-body{padding:0}
+
+        /* ═══════ PANEL PAGES (Accounts, Transfers, etc.) ═══════ */
+        .panel-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+        .panel-back{width:36px;height:36px;border-radius:var(--radius);background:var(--white);border:1px solid var(--gray-100);color:var(--navy);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+        .panel-back:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+        .panel-title h2{font-size:20px;font-weight:700;letter-spacing:-0.3px}
+        .panel-title p{font-size:13px;color:var(--gray-400);margin-top:2px}
+
+        .panel-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:24px}
+        .action-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:all 0.2s}
+        .action-card:hover{border-color:var(--blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+        .action-card.active{border-color:var(--blue);background:var(--blue-light)}
+        .act-icon{font-size:22px;margin-bottom:10px}
+        .action-card h4{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--navy)}
+        .action-card p{font-size:12px;color:var(--gray-400);line-height:1.4}
+
+        .panel-form{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:24px;display:none;margin-bottom:16px}
+        .panel-form.active{display:block;animation:pageIn 0.25s ease}
+        .panel-form h3{font-size:16px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+        .form-row{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+        .form-group{flex:1;min-width:200px}
+        .form-group label{display:block;font-size:12px;font-weight:600;color:var(--gray-400);margin-bottom:6px;letter-spacing:0.3px;text-transform:uppercase}
+        .form-group select,.form-group input{width:100%;padding:11px 14px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);color:var(--navy);font-size:13.5px;font-family:inherit;outline:none;transition:all 0.2s}
+        .form-group select:focus,.form-group input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,107,255,0.08)}
+        .form-group select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8299' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
+        .submit-btn{display:inline-flex;align-items:center;gap:8px;background:var(--blue);border:none;color:white;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all 0.2s;letter-spacing:0.2px}
+        .submit-btn:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+        .submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+        .submit-btn svg{width:16px;height:16px}
+
+        .panel-result{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:24px;display:none;white-space:pre-wrap;font-size:13.5px;line-height:1.75;margin-bottom:20px;color:var(--gray-600)}
+        .panel-result.active{display:block;animation:pageIn 0.3s ease}
+        .result-badge{display:inline-flex;align-items:center;gap:5px;background:var(--blue-light);color:var(--blue);font-size:11px;padding:5px 12px;border-radius:20px;margin-bottom:14px;font-weight:600}
+        .result-content p{margin-bottom:4px}
+        .loading-dots{display:flex;gap:5px;padding:8px 0}
+        .loading-dots span{width:8px;height:8px;background:var(--blue);border-radius:50%;animation:bounce 1.4s infinite ease-in-out both}
+        .loading-dots span:nth-child(1){animation-delay:-0.32s}
+        .loading-dots span:nth-child(2){animation-delay:-0.16s}
+        @keyframes bounce{0%,80%,100%{transform:scale(0.5);opacity:0.3}40%{transform:scale(1);opacity:1}}
+
+        /* ═══════ CHAT PAGE ═══════ */
+        .chat-layout{display:none;flex-direction:column;height:100%}
+        .chat-layout.active{display:flex}
+        .chat-container{flex:1;overflow-y:auto;padding:24px 0;scroll-behavior:smooth}
+        .chat-container::-webkit-scrollbar{width:5px}
+        .chat-container::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:3px}
+        .message-wrapper{max-width:740px;margin:0 auto;padding:0 28px}
+        .message{display:flex;gap:14px;padding:12px 0;animation:pageIn 0.25s ease}
+        .message-avatar{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
+        .message.bot .message-avatar{background:linear-gradient(135deg,var(--blue),var(--green));color:white}
+        .message.user .message-avatar{background:var(--navy);color:white}
+        .message-content{flex:1;line-height:1.75;font-size:14px;min-width:0;white-space:pre-wrap;color:var(--gray-600)}
+        .message-content p{margin-bottom:5px}
+        .message-content p:last-child{margin-bottom:0}
+        .tool-badge{display:inline-flex;align-items:center;gap:5px;background:var(--blue-light);color:var(--blue);font-size:11px;padding:4px 10px;border-radius:20px;margin-bottom:8px;font-weight:600}
+        .tool-badge svg{width:12px;height:12px}
+        .typing-indicator{display:flex;gap:4px;padding:4px 0}
+        .typing-indicator span{width:7px;height:7px;background:var(--blue);border-radius:50%;animation:bounce 1.4s infinite ease-in-out both}
+        .typing-indicator span:nth-child(1){animation-delay:-0.32s}
+        .typing-indicator span:nth-child(2){animation-delay:-0.16s}
+        .chat-input-area{flex-shrink:0;padding:16px 28px 20px;background:var(--white);border-top:1px solid var(--gray-100)}
+        .chat-input-wrap{max-width:740px;margin:0 auto}
+        .chat-input-box{display:flex;align-items:flex-end;background:var(--gray-50);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:10px 14px;transition:all 0.2s}
+        .chat-input-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,107,255,0.08);background:var(--white)}
+        #messageInput{flex:1;background:transparent;border:none;outline:none;color:var(--navy);font-size:14px;font-family:inherit;resize:none;max-height:150px;line-height:1.5;padding:2px 0}
+        #messageInput::placeholder{color:var(--gray-300)}
+        .chat-send-btn{width:36px;height:36px;background:var(--blue);border:none;border-radius:var(--radius);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;margin-left:8px}
+        .chat-send-btn:hover{background:var(--blue-dark);transform:scale(1.05)}
+        .chat-send-btn:disabled{background:var(--gray-200);cursor:not-allowed;transform:none}
+        .chat-send-btn svg{width:16px;height:16px}
+        .chat-footer{text-align:center;font-size:11px;color:var(--gray-300);margin-top:8px}
+        .chat-footer strong{color:var(--blue);font-weight:600}
+
+        /* Home search bar */
+        .home-search{max-width:600px;margin:0 auto 28px}
+        .home-search-box{display:flex;align-items:center;background:var(--white);border:1.5px solid var(--gray-100);border-radius:50px;padding:6px 6px 6px 20px;transition:all 0.3s;box-shadow:var(--shadow-sm)}
+        .home-search-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 4px rgba(26,107,255,0.08),var(--shadow-md)}
+        .hs-icon{display:flex;margin-right:12px;color:var(--gray-300)}
+        .hs-icon svg{width:18px;height:18px}
+        .home-search-box:focus-within .hs-icon{color:var(--blue)}
+        #homeInput{flex:1;background:transparent;border:none;outline:none;color:var(--navy);font-size:14px;font-family:inherit;resize:none;max-height:60px;line-height:1.5;padding:6px 0}
+        #homeInput::placeholder{color:var(--gray-300)}
+        .hs-send{width:40px;height:40px;background:var(--blue);border:none;border-radius:50%;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+        .hs-send:hover{background:var(--blue-dark);transform:scale(1.05)}
+        .hs-send svg{width:16px;height:16px}
+        .chip-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center}
+        .chip{background:var(--gray-50);border:1px solid var(--gray-100);color:var(--gray-500);padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:inherit;font-weight:500}
+        .chip:hover{background:var(--blue-light);border-color:var(--blue);color:var(--blue);transform:translateY(-1px)}
+
+        /* ═══════ VOICE CALL MODAL ═══════ */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(12,27,51,0.6);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--white);border-radius:var(--radius-xl);padding:40px;max-width:400px;width:92%;text-align:center;box-shadow:var(--shadow-xl);animation:modalIn 0.3s ease;position:relative}
+        @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+        .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--gray-300);font-size:22px;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+        .modal-close:hover{background:var(--gray-50);color:var(--navy)}
+        .modal-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-dark));display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;color:white;box-shadow:0 0 0 4px rgba(13,159,110,0.15)}
+        .modal-avatar.calling{animation:callPulse 1.5s infinite}
+        @keyframes callPulse{0%{box-shadow:0 0 0 4px rgba(13,159,110,0.15)}50%{box-shadow:0 0 0 16px rgba(13,159,110,0)}100%{box-shadow:0 0 0 4px rgba(13,159,110,0.15)}}
+        .modal h3{font-size:20px;font-weight:700;margin-bottom:4px}
+        .modal .subtitle{color:var(--gray-400);font-size:13px;margin-bottom:4px}
+        .modal .role{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px}
+        .modal-status{font-size:14px;color:var(--green);margin-bottom:20px;font-weight:500}
+        .modal-timer{font-family:'DM Serif Display',serif;font-size:32px;color:var(--navy);margin-bottom:20px;font-variant-numeric:tabular-nums}
+        .modal-actions{display:flex;gap:14px;justify-content:center}
+        .modal-btn{width:52px;height:52px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:20px}
+        .modal-btn.end{background:var(--red);color:white}
+        .modal-btn.end:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(220,53,69,0.35)}
+        .modal-btn.mute{background:var(--gray-50);border:1px solid var(--gray-100);color:var(--gray-500)}
+        .modal-btn.mute:hover{border-color:var(--blue);color:var(--blue)}
+        .modal-btn.mute.active{background:var(--blue);color:white;border-color:var(--blue)}
+        .modal-btn.speak{background:var(--blue);color:white}
+        .modal-btn.speak:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(26,107,255,0.35)}
+        .modal-btn.speak.listening{background:#7c3aed;animation:listenPulse 1s infinite}
+        @keyframes listenPulse{0%{box-shadow:0 0 0 0 rgba(124,58,237,0.4)}70%{box-shadow:0 0 0 12px rgba(124,58,237,0)}100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}}
+        .voice-transcript{background:var(--gray-50);border:1px solid var(--gray-100);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;font-size:13px;color:var(--gray-500);text-align:left;max-height:180px;overflow-y:auto;line-height:1.6}
+        .voice-transcript .manal{color:var(--green);font-weight:600}
+        .voice-transcript .customer{color:#7c3aed;font-weight:600}
+        .voice-status{font-size:12px;color:var(--gray-400);margin-bottom:12px;min-height:18px;font-style:italic}
+        .voice-wave{display:flex;gap:3px;align-items:center;justify-content:center;height:28px;margin-bottom:14px}
+        .voice-wave.hidden{display:none}
+        .voice-wave span{width:3px;border-radius:2px;background:var(--green);animation:waveBar 0.8s ease-in-out infinite}
+        .voice-wave span:nth-child(1){height:8px;animation-delay:0s}
+        .voice-wave span:nth-child(2){height:16px;animation-delay:0.1s}
+        .voice-wave span:nth-child(3){height:22px;animation-delay:0.2s}
+        .voice-wave span:nth-child(4){height:16px;animation-delay:0.3s}
+        .voice-wave span:nth-child(5){height:8px;animation-delay:0.4s}
+        .voice-wave.listening span{background:#7c3aed}
+        @keyframes waveBar{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
+
+        /* ═══════ RESPONSIVE ═══════ */
+        @media(max-width:900px){
+            .sidebar{position:fixed;left:-280px;top:0;bottom:0;z-index:500;width:270px;transition:left 0.3s}
+            .sidebar.open{left:0}
+            .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(12,27,51,0.4);z-index:499}
+            .sidebar-overlay.open{display:block}
+            .topbar-burger{display:flex}
+            .dash-cards{grid-template-columns:1fr 1fr}
+            .quick-grid{grid-template-columns:repeat(3,1fr)}
         }
-        .header {
-            background: linear-gradient(135deg, var(--bg-secondary), #0c1a35);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
-        }
-        .header-logo {
-            width: 42px; height: 42px;
-            background: linear-gradient(135deg, var(--accent), #0369a1);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 15px; font-weight: 800; color: white;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
-        }
-        .header-info h1 { font-size: 16px; font-weight: 700; }
-        .header-info p {
-            font-size: 11px; color: var(--success);
-            display: flex; align-items: center; gap: 5px; font-weight: 500;
-        }
-        .header-info p::before {
-            content: ''; width: 6px; height: 6px;
-            background: var(--success); border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .header-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
-        .header-badge {
-            background: var(--gold-glow); border: 1px solid rgba(245,158,11,0.3);
-            color: var(--gold); padding: 4px 10px; border-radius: 20px;
-            font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
-        }
-        .call-btn {
-            display: flex; align-items: center; gap: 6px;
-            background: linear-gradient(135deg, var(--success), #059669);
-            border: none; color: white; padding: 8px 16px; border-radius: 10px;
-            font-size: 12px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 2px 10px rgba(16,185,129,0.3);
-            transition: all 0.2s; letter-spacing: 0.3px;
-        }
-        .call-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
-        .call-btn svg { width: 14px; height: 14px; }
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px 0; scroll-behavior: smooth; }
-        .chat-container::-webkit-scrollbar { width: 6px; }
-        .chat-container::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
-        .message-wrapper { max-width: 768px; margin: 0 auto; padding: 0 24px; }
-        .message { display: flex; gap: 14px; padding: 14px 0; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        .message-avatar {
-            width: 32px; height: 32px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
-        }
-        .message.bot .message-avatar { background: linear-gradient(135deg, var(--accent), #0369a1); color: white; }
-        .message.user .message-avatar { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
-        .message-content { flex: 1; line-height: 1.7; font-size: 14px; min-width: 0; white-space: pre-wrap; }
-        .message-content p { margin-bottom: 6px; }
-        .message-content p:last-child { margin-bottom: 0; }
-        .welcome-card { max-width: 768px; margin: 0 auto; padding: 30px 24px; text-align: center; }
-        .welcome-icon {
-            width: 64px; height: 64px;
-            background: linear-gradient(135deg, var(--accent), #0369a1);
-            border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; margin: 0 auto 20px; color: white; font-weight: 800;
-            box-shadow: 0 8px 30px rgba(14,165,233,0.3);
-        }
-        .welcome-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-        .welcome-card > p { color: var(--text-secondary); font-size: 14px; max-width: 560px; margin: 0 auto 24px; line-height: 1.6; }
-        .quick-actions {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 8px; max-width: 700px; margin: 0 auto;
-        }
-        .quick-btn {
-            background: var(--bg-secondary); border: 1px solid var(--border);
-            color: var(--text-primary); padding: 12px 14px; border-radius: 12px;
-            font-size: 12px; cursor: pointer; transition: all 0.25s;
-            display: flex; align-items: center; gap: 8px; text-align: left;
-        }
-        .quick-btn:hover { background: var(--bg-input); border-color: var(--accent); transform: translateY(-1px); }
-        .quick-btn .icon { font-size: 18px; flex-shrink: 0; }
-        .quick-btn .btn-text { display: flex; flex-direction: column; }
-        .quick-btn .btn-label { font-weight: 600; font-size: 12px; }
-        .quick-btn .btn-desc { font-size: 10px; color: var(--text-secondary); }
-        .section-label {
-            font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px;
-            text-transform: uppercase; margin: 16px auto 8px; max-width: 700px; padding: 0 24px;
-        }
-        .security-notice {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
-            color: var(--success); font-size: 11px; padding: 8px 14px; border-radius: 10px;
-            margin-top: 16px; max-width: 700px; margin-left: auto; margin-right: auto;
-        }
-        .security-notice svg { width: 14px; height: 14px; flex-shrink: 0; }
-        .input-area { flex-shrink: 0; padding: 14px 24px 20px; background: var(--bg-tertiary); }
-        .input-wrapper { max-width: 768px; margin: 0 auto; }
-        .input-box {
-            display: flex; align-items: flex-end;
-            background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 16px; padding: 10px 14px; transition: all 0.25s;
-        }
-        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
-        #messageInput {
-            flex: 1; background: transparent; border: none; outline: none;
-            color: var(--text-primary); font-size: 14px; font-family: inherit;
-            resize: none; max-height: 150px; line-height: 1.5; padding: 2px 0;
-        }
-        #messageInput::placeholder { color: #4a6a8a; }
-        .send-btn {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--accent), #0369a1);
-            border: none; border-radius: 10px; color: white; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; flex-shrink: 0; margin-left: 8px;
-        }
-        .send-btn:hover { transform: scale(1.05); }
-        .send-btn:disabled { background: #1e3a5f; cursor: not-allowed; transform: none; }
-        .send-btn svg { width: 16px; height: 16px; }
-        .input-footer { text-align: center; font-size: 11px; color: #2a4a6a; margin-top: 8px; }
-        .input-footer span { color: var(--accent); font-weight: 600; }
-        .typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
-        .typing-indicator span {
-            width: 7px; height: 7px; background: var(--accent); border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
-        .tool-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: var(--accent-glow); border: 1px solid rgba(14,165,233,0.2);
-            color: var(--accent); font-size: 11px; padding: 4px 10px;
-            border-radius: 7px; margin-bottom: 8px; font-weight: 600;
-        }
-        .tool-badge svg { width: 11px; height: 11px; }
-        /* Manal Voice Call Modal */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-            z-index: 1000; align-items: center; justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        .modal-overlay.active { display: flex; }
-        .modal {
-            background: linear-gradient(160deg, var(--bg-secondary), var(--bg-tertiary));
-            border: 1px solid var(--border); border-radius: 24px;
-            padding: 40px; max-width: 420px; width: 90%; text-align: center;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
-        .modal-avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--success), #059669);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px; font-size: 32px; color: white;
-            box-shadow: 0 0 30px rgba(16,185,129,0.3);
-        }
-        .modal-avatar.calling { animation: callPulse 1.5s infinite; }
-        @keyframes callPulse {
-            0%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 70%{box-shadow:0 0 0 20px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
-        }
-        .modal h3 { font-size: 20px; margin-bottom: 6px; }
-        .modal .subtitle { color: var(--text-secondary); font-size: 13px; margin-bottom: 6px; }
-        .modal .role { color: var(--gold); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
-        .modal-status { font-size: 14px; color: var(--success); margin-bottom: 24px; font-weight: 500; }
-        .modal-timer { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; font-variant-numeric: tabular-nums; }
-        .modal-actions { display: flex; gap: 12px; justify-content: center; }
-        .modal-btn {
-            width: 56px; height: 56px; border-radius: 50%; border: none;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; font-size: 20px;
-        }
-        .modal-btn.end { background: var(--danger); color: white; }
-        .modal-btn.end:hover { transform: scale(1.1); box-shadow: 0 4px 20px rgba(239,68,85,0.4); }
-        .modal-btn.mute { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); }
-        .modal-btn.mute:hover { border-color: var(--accent); color: var(--accent); }
-        .modal-btn.mute.active { background: var(--accent); color: white; }
-        .modal-close {
-            position: absolute; top: 16px; right: 16px; background: none;
-            border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer;
-        }
-        .voice-transcript {
-            background: rgba(14,165,233,0.08); border: 1px solid rgba(14,165,233,0.15);
-            border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;
-            font-size: 13px; color: var(--text-secondary); text-align: left;
-            max-height: 120px; overflow-y: auto; line-height: 1.6;
-        }
-        .voice-transcript .manal { color: var(--success); font-weight: 600; }
-        .voice-transcript .customer { color: var(--purple); font-weight: 600; }
-        @media (max-width: 640px) {
-            .header { padding: 10px 16px; }
-            .header-badge { display: none; }
-            .call-btn span.call-text { display: none; }
-            .welcome-card { padding: 20px 16px; }
-            .welcome-card h2 { font-size: 20px; }
-            .quick-actions { grid-template-columns: 1fr 1fr; }
-            .input-area { padding: 10px 16px 16px; }
-            .message-wrapper { padding: 0 16px; }
-            .modal { padding: 28px 20px; }
+        @media(max-width:600px){
+            .content{padding:20px 16px}
+            .topbar{padding:0 16px}
+            .dash-cards{grid-template-columns:1fr}
+            .quick-grid{grid-template-columns:repeat(2,1fr)}
+            .panel-actions{grid-template-columns:1fr}
+            .form-row{flex-direction:column}
+            .form-group{min-width:100%}
+            .chat-input-area{padding:12px 16px 16px}
+            .message-wrapper{padding:0 16px}
+            .topbar-actions .tb-btn span.btn-text{display:none}
+            .modal{padding:28px 20px}
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-logo">APEX</div>
-        <div class="header-info">
-            <h1>Apex Banking Assistant</h1>
-            <p>Secure &mdash; 15 AI Tools Active</p>
+
+<!-- ═══════ LOGIN SCREEN ═══════ -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-bg"></div>
+    <div class="login-pattern"></div>
+    <div class="login-card">
+        <div class="login-logo">
+            <div class="login-logo-mark"><span>A</span></div>
+            <h1>Apex International Bank</h1>
+            <p>Digital Banking Platform</p>
         </div>
-        <div class="header-right">
-            <div class="header-badge">AI EMPLOYEE</div>
-            <button class="call-btn" onclick="startCall()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span class="call-text">Call Manal</span>
+        <div class="login-box">
+            <h2>Welcome Back</h2>
+            <p class="login-sub">Sign in to access your banking dashboard</p>
+            <div class="login-field">
+                <label>Select Account</label>
+                <select id="loginAccount">
+                    <option value="" disabled selected>Choose your account...</option>
+                    <option value="ACC-1001" data-name="Ahmed Khan" data-bal="$12,450">ACC-1001 &mdash; Ahmed Khan</option>
+                    <option value="ACC-1002" data-name="Sara Ali" data-bal="$5,321">ACC-1002 &mdash; Sara Ali</option>
+                    <option value="ACC-1003" data-name="Omar Farooq" data-bal="$891">ACC-1003 &mdash; Omar Farooq</option>
+                    <option value="ACC-2001" data-name="Fatima Noor" data-bal="$28,100">ACC-2001 &mdash; Fatima Noor</option>
+                    <option value="ACC-2002" data-name="Zain Malik" data-bal="$3,675">ACC-2002 &mdash; Zain Malik</option>
+                    <option value="ACC-3001" data-name="Maria Rodriguez" data-bal="$45,200">ACC-3001 &mdash; Maria Rodriguez</option>
+                    <option value="ACC-3002" data-name="James Chen" data-bal="$125,800">ACC-3002 &mdash; James Chen</option>
+                    <option value="ACC-4001" data-name="Aisha Mohammed" data-bal="$18,900">ACC-4001 &mdash; Aisha Mohammed</option>
+                    <option value="ACC-4002" data-name="Raj Patel" data-bal="$32,500">ACC-4002 &mdash; Raj Patel</option>
+                    <option value="ACC-5001" data-name="Hans Mueller" data-bal="$67,300">ACC-5001 &mdash; Hans Mueller</option>
+                </select>
+            </div>
+            <div class="login-field">
+                <label>PIN</label>
+                <input type="password" id="loginPin" placeholder="Enter 4-digit PIN" maxlength="4" value="1234">
+            </div>
+            <button class="login-btn" onclick="doLogin()">Sign In Securely</button>
+        </div>
+        <div class="login-footer">
+            256-bit TLS Encryption &bull; FDIC Insured<br>
+            Founded by <strong>Midhat Nayab</strong> &bull; 25+ countries worldwide
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ MAIN APP ═══════ -->
+<div class="app" id="appShell">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-row">
+                <div class="sb-logo"><span>A</span></div>
+                <div>
+                    <div class="sb-name">Apex Bank</div>
+                    <div class="sb-sub">International</div>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-label">Main</div>
+                <div class="nav-item active" onclick="navTo('dashboard')" data-nav="dashboard">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+                    Dashboard
+                </div>
+                <div class="nav-item" onclick="navTo('accounts')" data-nav="accounts">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                    Accounts & Cards
+                </div>
+                <div class="nav-item" onclick="navTo('transfers')" data-nav="transfers">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                    Transfers & Pay
+                </div>
+                <div class="nav-item" onclick="navTo('loans')" data-nav="loans">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                    Loans & Credit
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-label">Services</div>
+                <div class="nav-item" onclick="navTo('advice')" data-nav="advice">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                    Financial Advice
+                </div>
+                <div class="nav-item" onclick="navTo('security')" data-nav="security">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                    Security & Fraud
+                </div>
+                <div class="nav-item" onclick="navTo('reports')" data-nav="reports">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                    Reports
+                </div>
+                <div class="nav-item" onclick="navTo('branches')" data-nav="branches">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                    Branches & Info
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-label">Intelligence</div>
+                <div class="nav-item" onclick="navTo('staff')" data-nav="staff">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                    Staff Intelligence
+                </div>
+                <div class="nav-item" onclick="navTo('chat')" data-nav="chat">
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                    AI Assistant
+                </div>
+            </div>
+        </nav>
+        <div class="sidebar-user">
+            <div class="su-avatar" id="suAvatar">AK</div>
+            <div class="su-info">
+                <div class="su-name" id="suName">Ahmed Khan</div>
+                <div class="su-acc" id="suAcc">ACC-1001</div>
+            </div>
+            <button class="su-logout" onclick="doLogout()" title="Sign Out">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </button>
         </div>
-    </div>
+    </aside>
 
-    <div class="chat-container" id="chatContainer">
-        <div class="welcome-card" id="welcomeCard">
-            <div class="welcome-icon">APEX</div>
-            <h2>Welcome to Apex Banking</h2>
-            <p>I'm your AI banking employee. I handle accounts, transfers, loans, fraud detection, financial advice, reports, and more &mdash; just like a real bank employee. Or call <strong>Manal</strong> for voice support.</p>
-
-            <div class="section-label">Account & Cards</div>
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuick('Check full profile for account ACC-1001')">
-                    <span class="icon">&#127974;</span>
-                    <span class="btn-text"><span class="btn-label">Account Profile</span><span class="btn-desc">Balance, cards, loans, score</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Show transaction history for ACC-1001')">
-                    <span class="icon">&#128196;</span>
-                    <span class="btn-text"><span class="btn-label">Transactions</span><span class="btn-desc">History with categories</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Show my credit card details for ACC-1001')">
-                    <span class="icon">&#128179;</span>
-                    <span class="btn-text"><span class="btn-label">Card Management</span><span class="btn-desc">View, block, limits</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('I lost my debit card for account ACC-1001, it was stolen')">
-                    <span class="icon">&#128680;</span>
-                    <span class="btn-text"><span class="btn-label">Report Lost Card</span><span class="btn-desc">Block instantly</span></span>
-                </button>
+    <!-- Main Area -->
+    <div class="main">
+        <div class="topbar">
+            <button class="topbar-burger" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="topbar-title">
+                <h2 id="topTitle">Dashboard</h2>
+                <p id="topSub">Welcome back to Apex Banking</p>
             </div>
-
-            <div class="section-label">Transfers & Payments</div>
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuick('Transfer $500 from ACC-1001 to ACC-1002')">
-                    <span class="icon">&#128184;</span>
-                    <span class="btn-text"><span class="btn-label">Transfer Money</span><span class="btn-desc">Internal & international</span></span>
+            <div class="topbar-actions">
+                <button class="tb-btn primary" onclick="startCall()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span class="btn-text">Call Manal</span>
                 </button>
-                <button class="quick-btn" onclick="sendQuick('Pay my electricity bill of $120 from ACC-1001')">
-                    <span class="icon">&#128161;</span>
-                    <span class="btn-text"><span class="btn-label">Pay Bills</span><span class="btn-desc">Utilities & subscriptions</span></span>
-                </button>
-            </div>
-
-            <div class="section-label">Loans & Financial Advice</div>
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuick('Check home loan eligibility for ACC-3001')">
-                    <span class="icon">&#127968;</span>
-                    <span class="btn-text"><span class="btn-label">Loan Eligibility</span><span class="btn-desc">Auto credit scoring</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Give me investment advice for ACC-3001')">
-                    <span class="icon">&#128200;</span>
-                    <span class="btn-text"><span class="btn-label">Financial Advice</span><span class="btn-desc">Budget, savings, invest</span></span>
-                </button>
-            </div>
-
-            <div class="section-label">Security & Operations</div>
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuick('Run fraud detection scan on account ACC-1003')">
-                    <span class="icon">&#128737;</span>
-                    <span class="btn-text"><span class="btn-label">Fraud Detection</span><span class="btn-desc">Security scan & alerts</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Check KYC status for ACC-1003')">
-                    <span class="icon">&#128221;</span>
-                    <span class="btn-text"><span class="btn-label">KYC Verification</span><span class="btn-desc">Document processing</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Generate tax report for ACC-3001')">
-                    <span class="icon">&#128202;</span>
-                    <span class="btn-text"><span class="btn-label">Reports</span><span class="btn-desc">Statements, tax, audit</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Find branches in Dubai')">
-                    <span class="icon">&#128205;</span>
-                    <span class="btn-text"><span class="btn-label">Branch Locator</span><span class="btn-desc">25+ countries worldwide</span></span>
-                </button>
-            </div>
-
-            <div class="section-label">Bank Staff Tools</div>
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="sendQuick('Show market analysis for Asia region')">
-                    <span class="icon">&#127760;</span>
-                    <span class="btn-text"><span class="btn-label">Market Analysis</span><span class="btn-desc">Staff decision support</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Show personalized offers for ACC-1002')">
-                    <span class="icon">&#127873;</span>
-                    <span class="btn-text"><span class="btn-label">Marketing Offers</span><span class="btn-desc">Personalized products</span></span>
-                </button>
-                <button class="quick-btn" onclick="sendQuick('Show bank performance metrics')">
-                    <span class="icon">&#128202;</span>
-                    <span class="btn-text"><span class="btn-label">Performance</span><span class="btn-desc">Bank-wide metrics</span></span>
-                </button>
-            </div>
-
-            <div class="security-notice">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                256-bit encrypted | 15 AI tools | 10 customers | 25+ branches worldwide | Voice agent: Manal
+                <div class="tb-icon" title="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <div class="notif-dot"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="input-area">
-        <div class="input-wrapper">
-            <div class="input-box">
-                <textarea id="messageInput" rows="1" placeholder="Ask anything — accounts, transfers, loans, fraud, advice, reports..."
-                    onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
+        <div class="content" id="contentArea">
+
+            <!-- ═══ DASHBOARD ═══ -->
+            <div class="page active" id="page-dashboard">
+                <div class="dash-greeting">
+                    <h1 id="greetName">Good morning, Ahmed</h1>
+                    <p>Here's your financial overview for today</p>
+                </div>
+
+                <div class="dash-cards" id="dashCards">
+                    <div class="dash-card">
+                        <div class="dc-accent blue"></div>
+                        <div class="dc-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Account Balance</div>
+                        <div class="dc-value" id="dcBalance">$12,450.00</div>
+                        <div class="dc-sub" id="dcAccType">Savings Account</div>
+                        <div class="dc-badge up" id="dcStatus">Active</div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dc-accent green"></div>
+                        <div class="dc-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Credit Score</div>
+                        <div class="dc-value" id="dcCredit">780</div>
+                        <div class="dc-sub">Very Good</div>
+                        <div class="dc-badge up">Excellent Standing</div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dc-accent amber"></div>
+                        <div class="dc-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Monthly Income</div>
+                        <div class="dc-value" id="dcIncome">$5,500</div>
+                        <div class="dc-sub" id="dcOccupation">Software Engineer</div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dc-accent red"></div>
+                        <div class="dc-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Investments</div>
+                        <div class="dc-value" id="dcInvest">$26,700</div>
+                        <div class="dc-sub">Mutual Funds, FD, Gold</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div class="quick-grid">
+                    <div class="quick-item" onclick="navTo('transfers');setTimeout(()=>showForm('transfers','transfer'),100)">
+                        <div class="qi-icon blue">&#8644;</div>
+                        <h4>Transfer Money</h4>
+                    </div>
+                    <div class="quick-item" onclick="navTo('transfers');setTimeout(()=>showForm('transfers','pay-bill'),100)">
+                        <div class="qi-icon green">&#9889;</div>
+                        <h4>Pay Bills</h4>
+                    </div>
+                    <div class="quick-item" onclick="navTo('accounts');setTimeout(()=>showForm('accounts','profile'),100)">
+                        <div class="qi-icon blue">&#128100;</div>
+                        <h4>My Profile</h4>
+                    </div>
+                    <div class="quick-item" onclick="navTo('loans');setTimeout(()=>showForm('loans','eligibility'),100)">
+                        <div class="qi-icon amber">&#127968;</div>
+                        <h4>Apply for Loan</h4>
+                    </div>
+                    <div class="quick-item" onclick="navTo('security');setTimeout(()=>showForm('security','fraud-scan'),100)">
+                        <div class="qi-icon red">&#128270;</div>
+                        <h4>Fraud Scan</h4>
+                    </div>
+                    <div class="quick-item" onclick="navTo('chat')">
+                        <div class="qi-icon gold">&#128172;</div>
+                        <h4>AI Assistant</h4>
+                    </div>
+                </div>
+
+                <!-- AI Search -->
+                <div class="home-search">
+                    <div class="home-search-box">
+                        <div class="hs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                        <textarea id="homeInput" rows="1" placeholder="Ask Apex AI anything..." onkeydown="handleHomeKey(event)" oninput="autoResize(this)"></textarea>
+                        <button class="hs-send" id="homeSendBtn" onclick="sendFromHome()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                    <div class="chip-row">
+                        <button class="chip" onclick="homeQuick('Check balance for ACC-1001')">Check Balance</button>
+                        <button class="chip" onclick="homeQuick('Transfer $500 from ACC-1001 to ACC-1002')">Transfer</button>
+                        <button class="chip" onclick="homeQuick('Find branches in Karachi')">Branches</button>
+                        <button class="chip" onclick="homeQuick('Run fraud scan on ACC-1003')">Fraud Scan</button>
+                        <button class="chip" onclick="homeQuick('Who created you?')">About Apex</button>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card-wrap" id="recentTxnCard">
+                    <div class="card-wrap-header">
+                        <h3>Recent Transactions</h3>
+                        <a onclick="navTo('accounts');setTimeout(()=>showForm('accounts','transactions'),100)">View All</a>
+                    </div>
+                    <div class="card-wrap-body">
+                        <table class="txn-table" id="dashTxnTable">
+                            <thead><tr><th>Date</th><th>Description</th><th>Category</th><th style="text-align:right">Amount</th></tr></thead>
+                            <tbody id="dashTxnBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="input-footer">Apex Banking AI Employee &mdash; 15 Tools &mdash; Powered by <span>Llama 4 + Groq</span></div>
+
+            <!-- ═══ PANEL PAGES ═══ -->
+            <div class="page" id="page-accounts">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Accounts & Cards</h2><p>View profiles, balances, credit scores, and manage cards</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('accounts','profile')"><div class="act-icon">&#128100;</div><h4>Account Profile</h4><p>Full profile: balance, cards, loans, credit score</p></div>
+                    <div class="action-card" onclick="showForm('accounts','transactions')"><div class="act-icon">&#128196;</div><h4>Transaction History</h4><p>30-day history with categories</p></div>
+                    <div class="action-card" onclick="showForm('accounts','manage-card')"><div class="act-icon">&#128179;</div><h4>Manage Card</h4><p>Block, unblock, set limits, view details</p></div>
+                    <div class="action-card" onclick="showForm('accounts','update-info')"><div class="act-icon">&#9998;</div><h4>Update Info</h4><p>Change phone, email, address, nominee</p></div>
+                </div>
+                <div class="panel-form" id="form-accounts"></div>
+                <div class="panel-result" id="result-accounts"></div>
+            </div>
+
+            <div class="page" id="page-transfers">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Transfers & Payments</h2><p>Send money and pay bills</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('transfers','transfer')"><div class="act-icon">&#128184;</div><h4>Transfer Money</h4><p>Internal, international, or to other banks</p></div>
+                    <div class="action-card" onclick="showForm('transfers','pay-bill')"><div class="act-icon">&#128161;</div><h4>Pay Bills</h4><p>Electricity, gas, water, internet, subscriptions</p></div>
+                </div>
+                <div class="panel-form" id="form-transfers"></div>
+                <div class="panel-result" id="result-transfers"></div>
+            </div>
+
+            <div class="page" id="page-loans">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Loans & Credit</h2><p>Loan eligibility and credit scoring</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('loans','eligibility')"><div class="act-icon">&#128176;</div><h4>Check Eligibility</h4><p>Personal, home, auto, business, education loans</p></div>
+                    <div class="action-card" onclick="showForm('loans','active-loans')"><div class="act-icon">&#128196;</div><h4>Active Loans</h4><p>View current loans, EMIs, remaining balance</p></div>
+                </div>
+                <div class="panel-form" id="form-loans"></div>
+                <div class="panel-result" id="result-loans"></div>
+            </div>
+
+            <div class="page" id="page-advice">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Financial Advice</h2><p>Personalized financial guidance</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('advice','budget')"><div class="act-icon">&#128176;</div><h4>Budget Analysis</h4><p>Analyze spending and create budget plan</p></div>
+                    <div class="action-card" onclick="showForm('advice','investment')"><div class="act-icon">&#128200;</div><h4>Investment Advice</h4><p>Where to invest based on your profile</p></div>
+                    <div class="action-card" onclick="showForm('advice','savings')"><div class="act-icon">&#128178;</div><h4>Savings Tips</h4><p>Smart saving strategies for your goals</p></div>
+                </div>
+                <div class="panel-form" id="form-advice"></div>
+                <div class="panel-result" id="result-advice"></div>
+            </div>
+
+            <div class="page" id="page-security">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Security & Fraud</h2><p>Fraud detection, card security, and KYC</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('security','fraud-scan')"><div class="act-icon">&#128270;</div><h4>Fraud Detection Scan</h4><p>Scan account for suspicious activity</p></div>
+                    <div class="action-card" onclick="showForm('security','report-card')"><div class="act-icon">&#128680;</div><h4>Report Lost/Stolen Card</h4><p>Block card instantly and request replacement</p></div>
+                    <div class="action-card" onclick="showForm('security','kyc')"><div class="act-icon">&#128221;</div><h4>KYC Verification</h4><p>Check status or initiate KYC process</p></div>
+                </div>
+                <div class="panel-form" id="form-security"></div>
+                <div class="panel-result" id="result-security"></div>
+            </div>
+
+            <div class="page" id="page-reports">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Reports & Operations</h2><p>Statements, tax reports, and audit</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('reports','statement')"><div class="act-icon">&#128196;</div><h4>Account Statement</h4><p>Full account statement with details</p></div>
+                    <div class="action-card" onclick="showForm('reports','tax')"><div class="act-icon">&#128203;</div><h4>Tax Report</h4><p>Generate tax report for filing</p></div>
+                    <div class="action-card" onclick="showForm('reports','spending')"><div class="act-icon">&#128202;</div><h4>Spending Report</h4><p>Category-wise spending breakdown</p></div>
+                </div>
+                <div class="panel-form" id="form-reports"></div>
+                <div class="panel-result" id="result-reports"></div>
+            </div>
+
+            <div class="page" id="page-branches">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Branches & Bank Info</h2><p>Find branches, look up banks, exchange rates</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('branches','find-branch')"><div class="act-icon">&#128205;</div><h4>Find Branch / ATM</h4><p>Locate branches in 25+ countries</p></div>
+                    <div class="action-card" onclick="showForm('branches','bank-lookup')"><div class="act-icon">&#127974;</div><h4>Bank Info Lookup</h4><p>Details on any bank worldwide</p></div>
+                    <div class="action-card" onclick="showForm('branches','exchange')"><div class="act-icon">&#128177;</div><h4>Exchange Rates</h4><p>Currency conversion and forex info</p></div>
+                    <div class="action-card" onclick="showForm('branches','knowledge')"><div class="act-icon">&#128218;</div><h4>Banking Knowledge</h4><p>SWIFT, IBAN, regulations, policies</p></div>
+                </div>
+                <div class="panel-form" id="form-branches"></div>
+                <div class="panel-result" id="result-branches"></div>
+            </div>
+
+            <div class="page" id="page-staff">
+                <div class="panel-header"><button class="panel-back" onclick="navTo('dashboard')">&#8592;</button><div class="panel-title"><h2>Staff Intelligence</h2><p>Market analysis, risk, and decision support</p></div></div>
+                <div class="panel-actions">
+                    <div class="action-card" onclick="showForm('staff','market')"><div class="act-icon">&#127760;</div><h4>Market Analysis</h4><p>Regional market insights and trends</p></div>
+                    <div class="action-card" onclick="showForm('staff','performance')"><div class="act-icon">&#128202;</div><h4>Bank Performance</h4><p>Bank-wide metrics and KPIs</p></div>
+                    <div class="action-card" onclick="showForm('staff','offers')"><div class="act-icon">&#127873;</div><h4>Marketing Offers</h4><p>Personalized product recommendations</p></div>
+                </div>
+                <div class="panel-form" id="form-staff"></div>
+                <div class="panel-result" id="result-staff"></div>
+            </div>
+
+            <!-- ═══ CHAT PAGE ═══ -->
+            <div class="page" id="page-chat">
+                <div class="chat-layout active">
+                    <div class="chat-container" id="chatContainer">
+                        <div class="message-wrapper">
+                            <div class="message bot">
+                                <div class="message-avatar">A</div>
+                                <div class="message-content">
+                                    <p>Assalam o Alaikum! I'm Apex, your AI banking employee. I can help with accounts, transfers, loans, fraud detection, financial advice, reports, and more.</p>
+                                    <p>Try asking me anything or go back to the <a href="#" onclick="navTo('dashboard');return false" style="color:var(--blue);font-weight:600">Dashboard</a> to use interactive panels.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrap">
+                            <div class="chat-input-box">
+                                <textarea id="messageInput" rows="1" placeholder="Ask anything — accounts, transfers, loans, fraud, advice, reports..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                                <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                </button>
+                            </div>
+                            <div class="chat-footer">Apex AI Employee &mdash; 18 Tools &mdash; Powered by <strong>Llama 4 + Groq</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 
-    <!-- Manal Voice Call Modal -->
-    <div class="modal-overlay" id="callModal">
-        <div class="modal" style="position:relative;">
-            <button class="modal-close" onclick="endCall()">&times;</button>
-            <div class="modal-avatar" id="callAvatar">&#128222;</div>
-            <h3>Manal</h3>
-            <div class="subtitle">Senior Banking Officer</div>
-            <div class="role">Apex Bank Voice Support</div>
-            <div class="modal-status" id="callStatus">Connecting...</div>
-            <div class="modal-timer" id="callTimer" style="display:none;">00:00</div>
-            <div class="voice-transcript" id="voiceTranscript" style="display:none;"></div>
-            <div class="modal-actions">
-                <button class="modal-btn mute" id="muteBtn" onclick="toggleMute()" title="Mute">&#128263;</button>
-                <button class="modal-btn end" onclick="endCall()" title="End Call">&#128222;</button>
-            </div>
+<!-- ═══════ VOICE CALL MODAL ═══════ -->
+<div class="modal-overlay" id="callModal">
+    <div class="modal">
+        <button class="modal-close" onclick="endCall()">&times;</button>
+        <div class="modal-avatar" id="callAvatar">&#128222;</div>
+        <h3>Manal</h3>
+        <div class="subtitle">Senior Banking Officer</div>
+        <div class="role">Apex Bank &mdash; Voice Agent</div>
+        <div class="modal-status" id="callStatus">Connecting...</div>
+        <div class="modal-timer" id="callTimer" style="display:none">00:00</div>
+        <div class="voice-wave hidden" id="voiceWave"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="voice-status" id="voiceStatus"></div>
+        <div class="voice-transcript" id="voiceTranscript" style="display:none"></div>
+        <div class="modal-actions">
+            <button class="modal-btn speak" id="speakBtn" onclick="toggleListening()" title="Speak">&#127908;</button>
+            <button class="modal-btn mute" id="muteBtn" onclick="toggleMute()" title="Mute">&#128263;</button>
+            <button class="modal-btn end" onclick="endCall()" title="End Call">&#128222;</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const welcomeCard = document.getElementById('welcomeCard');
-        let isProcessing = false;
+<script>
+// ═══════ CUSTOMER DATA (for dashboard rendering) ═══════
+const CUSTOMERS_LOCAL = {
+    "ACC-1001":{name:"Ahmed Khan",balance:12450,type:"Savings",status:"Active",credit:780,income:5500,occupation:"Software Engineer",invest:26700},
+    "ACC-1002":{name:"Sara Ali",balance:5320.75,type:"Current",status:"Active",credit:720,income:3800,occupation:"Graphic Designer",invest:7000},
+    "ACC-1003":{name:"Omar Farooq",balance:890.50,type:"Savings",status:"Frozen",credit:580,income:2200,occupation:"Teacher",invest:0},
+    "ACC-2001":{name:"Fatima Noor",balance:28100,type:"Business",status:"Active",credit:810,income:12000,occupation:"CEO - Noor Trading",invest:87000},
+    "ACC-2002":{name:"Zain Malik",balance:3675.25,type:"Current",status:"Active",credit:650,income:1800,occupation:"University Student",invest:500},
+    "ACC-3001":{name:"Maria Rodriguez",balance:45200,type:"Premium Savings",status:"Active",credit:820,income:9500,occupation:"Investment Banker",invest:103000},
+    "ACC-3002":{name:"James Chen",balance:125800,type:"Wealth Management",status:"Active",credit:850,income:25000,occupation:"Managing Director",invest:650000},
+    "ACC-4001":{name:"Aisha Mohammed",balance:18900,type:"Savings",status:"Active",credit:740,income:6000,occupation:"Doctor",invest:37000},
+    "ACC-4002":{name:"Raj Patel",balance:32500,type:"Business",status:"Active",credit:760,income:8000,occupation:"Restaurant Chain Owner",invest:53000},
+    "ACC-5001":{name:"Hans Mueller",balance:67300,type:"Premium Current",status:"Active",credit:800,income:11000,occupation:"Engineering Director",invest:136000}
+};
+const RECENT_TXN = {
+    "ACC-1001":[
+        {date:"Mar 17",desc:"Salary Credit - TechCorp",cat:"Income",amount:5500,type:"credit"},
+        {date:"Mar 16",desc:"Amazon Shopping",cat:"Shopping",amount:-156.80,type:"debit"},
+        {date:"Mar 15",desc:"K-Electric Bill",cat:"Utilities",amount:-120,type:"debit"},
+        {date:"Mar 14",desc:"Carrefour Grocery",cat:"Groceries",amount:-85.40,type:"debit"},
+        {date:"Mar 12",desc:"ATM Withdrawal",cat:"Cash",amount:-200,type:"debit"}
+    ],
+    "ACC-1002":[{date:"Mar 16",desc:"Freelance - Design Work",cat:"Income",amount:1200,type:"credit"},{date:"Mar 14",desc:"Restaurant",cat:"Dining",amount:-45,type:"debit"},{date:"Mar 12",desc:"Spotify",cat:"Entertainment",amount:-14.99,type:"debit"}],
+    "ACC-2001":[{date:"Mar 16",desc:"Client Payment",cat:"Business",amount:15000,type:"credit"},{date:"Mar 15",desc:"Office Rent",cat:"Business",amount:-3500,type:"debit"},{date:"Mar 14",desc:"Salaries",cat:"Payroll",amount:-8500,type:"debit"}],
+    "ACC-3001":[{date:"Mar 17",desc:"Salary - Goldman Sachs",cat:"Income",amount:9500,type:"credit"},{date:"Mar 15",desc:"Whole Foods",cat:"Groceries",amount:-210.50,type:"debit"},{date:"Mar 14",desc:"Mortgage Payment",cat:"Loan",amount:-1850,type:"debit"}],
+    "ACC-3002":[{date:"Mar 16",desc:"Dividend - Chen Holdings",cat:"Investment",amount:12000,type:"credit"},{date:"Mar 14",desc:"Private Banking Fee",cat:"Banking",amount:-500,type:"debit"},{date:"Mar 12",desc:"Stock Purchase - NVIDIA",cat:"Investment",amount:-15000,type:"debit"}]
+};
 
-        function autoResize(el) {
-            el.style.height = 'auto';
-            el.style.height = Math.min(el.scrollHeight, 150) + 'px';
-        }
-        function handleKey(e) {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-        }
-        function sendQuick(text) { messageInput.value = text; sendMessage(); }
+let currentAccount = null;
 
-        function addMessage(role, content, toolUsed) {
-            if (welcomeCard) welcomeCard.style.display = 'none';
-            const wrapper = document.createElement('div');
-            wrapper.className = 'message-wrapper';
-            const msg = document.createElement('div');
-            msg.className = `message ${role}`;
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = role === 'bot' ? 'A' : 'Y';
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            let html = '';
-            if (toolUsed) {
-                html += `<div class="tool-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>${toolUsed}</div>`;
+// ═══════ LOGIN ═══════
+function doLogin() {
+    const sel = document.getElementById('loginAccount');
+    if (!sel.value) { alert('Please select an account.'); return; }
+    currentAccount = sel.value;
+    const opt = sel.selectedOptions[0];
+    const cust = CUSTOMERS_LOCAL[currentAccount];
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('appShell').classList.add('visible');
+    updateDashboard(currentAccount);
+}
+function doLogout() {
+    document.getElementById('appShell').classList.remove('visible');
+    setTimeout(() => {
+        document.getElementById('loginScreen').classList.remove('hidden');
+        navTo('dashboard');
+    }, 300);
+}
+
+function updateDashboard(accId) {
+    const c = CUSTOMERS_LOCAL[accId];
+    if (!c) return;
+    const firstName = c.name.split(' ')[0];
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('greetName').textContent = `${greeting}, ${firstName}`;
+    document.getElementById('dcBalance').textContent = '$' + c.balance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('dcAccType').textContent = c.type + ' Account';
+    const statusEl = document.getElementById('dcStatus');
+    statusEl.textContent = c.status;
+    statusEl.className = 'dc-badge ' + (c.status === 'Active' ? 'up' : 'warn');
+    document.getElementById('dcCredit').textContent = c.credit;
+    document.getElementById('dcIncome').textContent = '$' + c.income.toLocaleString();
+    document.getElementById('dcOccupation').textContent = c.occupation;
+    document.getElementById('dcInvest').textContent = '$' + c.invest.toLocaleString();
+    // User sidebar
+    const initials = c.name.split(' ').map(w=>w[0]).join('');
+    document.getElementById('suAvatar').textContent = initials;
+    document.getElementById('suName').textContent = c.name;
+    document.getElementById('suAcc').textContent = accId;
+    // Recent transactions
+    const txns = RECENT_TXN[accId] || RECENT_TXN['ACC-1001'];
+    const tbody = document.getElementById('dashTxnBody');
+    tbody.innerHTML = txns.map(t => `<tr>
+        <td class="txn-date">${t.date}</td>
+        <td><div class="txn-desc">${t.desc}</div></td>
+        <td><span style="font-size:12px;color:var(--gray-400)">${t.cat}</span></td>
+        <td class="txn-amount ${t.type}" style="text-align:right">${t.type==='credit'?'+':'-'}$${Math.abs(t.amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+    </tr>`).join('');
+}
+
+// ═══════ NAVIGATION ═══════
+const topTitles = {
+    dashboard:['Dashboard','Welcome back to Apex Banking'],
+    accounts:['Accounts & Cards','Manage your accounts and cards'],
+    transfers:['Transfers & Payments','Send money and pay bills'],
+    loans:['Loans & Credit','Loan eligibility and credit scoring'],
+    advice:['Financial Advice','Personalized financial guidance'],
+    security:['Security & Fraud','Fraud detection and card security'],
+    reports:['Reports','Statements, tax reports, and audit'],
+    branches:['Branches & Info','Find branches and bank information'],
+    staff:['Staff Intelligence','Market analysis and decision support'],
+    chat:['AI Assistant','Chat with Apex AI banking employee']
+};
+
+function navTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const navEl = document.querySelector(`[data-nav="${page}"]`);
+    if (navEl) navEl.classList.add('active');
+    const tt = topTitles[page] || ['Dashboard',''];
+    document.getElementById('topTitle').textContent = tt[0];
+    document.getElementById('topSub').textContent = tt[1];
+    // Focus chat input
+    if (page === 'chat') setTimeout(() => document.getElementById('messageInput').focus(), 100);
+    closeSidebar();
+    // Clear forms/results on panel pages
+    const formEl = document.getElementById('form-' + page);
+    const resultEl = document.getElementById('result-' + page);
+    if (formEl) { formEl.classList.remove('active'); formEl.innerHTML = ''; }
+    if (resultEl) { resultEl.classList.remove('active'); resultEl.innerHTML = ''; }
+    // Scroll to top
+    document.getElementById('contentArea').scrollTop = 0;
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
+
+// ═══════ HOME SEARCH ═══════
+function handleHomeKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFromHome(); } }
+function sendFromHome() {
+    const input = document.getElementById('homeInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = ''; input.style.height = 'auto';
+    navTo('chat');
+    document.getElementById('messageInput').value = text;
+    sendMessage();
+}
+function homeQuick(text) { document.getElementById('homeInput').value = text; sendFromHome(); }
+
+// ═══════ ACCOUNT SELECT ═══════
+const accountOptions = `
+    <option value="">Select Account...</option>
+    <option value="ACC-1001">ACC-1001 &mdash; Ahmed Khan ($12,450)</option>
+    <option value="ACC-1002">ACC-1002 &mdash; Sara Ali ($5,321)</option>
+    <option value="ACC-1003">ACC-1003 &mdash; Omar Farooq ($891) [Frozen]</option>
+    <option value="ACC-2001">ACC-2001 &mdash; Fatima Noor ($28,100)</option>
+    <option value="ACC-2002">ACC-2002 &mdash; Zain Malik ($3,675)</option>
+    <option value="ACC-3001">ACC-3001 &mdash; Maria Rodriguez ($45,200)</option>
+    <option value="ACC-3002">ACC-3002 &mdash; James Chen ($125,800)</option>
+    <option value="ACC-4001">ACC-4001 &mdash; Aisha Mohammed ($18,900)</option>
+    <option value="ACC-4002">ACC-4002 &mdash; Raj Patel ($32,500)</option>
+    <option value="ACC-5001">ACC-5001 &mdash; Hans Mueller ($67,300)</option>
+`;
+
+// ═══════ FORM TEMPLATES ═══════
+const formTemplates = {
+    'accounts:profile':{title:'Account Profile',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Check full profile for account ${v('f-acc')}`},
+    'accounts:transactions':{title:'Transaction History',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Show transaction history for ${v('f-acc')}`},
+    'accounts:manage-card':{title:'Manage Card',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div><div class="form-group"><label>Card Type</label><select id="f-cardtype"><option value="debit">Debit Card</option><option value="credit">Credit Card</option></select></div></div><div class="form-row"><div class="form-group"><label>Action</label><select id="f-action"><option value="view_details">View Details</option><option value="block">Block Card</option><option value="unblock">Unblock Card</option><option value="set_limit">Set Spending Limit</option><option value="enable_international">Enable International</option><option value="disable_international">Disable International</option></select></div></div>`,getMessage:()=>`${v('f-action').replace('_',' ')} for ${v('f-cardtype')} card on account ${v('f-acc')}`},
+    'accounts:update-info':{title:'Update Customer Info',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div><div class="form-row"><div class="form-group"><label>Field to Update</label><select id="f-field"><option value="phone">Phone Number</option><option value="email">Email Address</option><option value="address">Address</option><option value="nominee">Nominee</option></select></div><div class="form-group"><label>New Value</label><input id="f-newval" placeholder="Enter new value..."></div></div>`,getMessage:()=>`Update ${v('f-field')} to "${v('f-newval')}" for account ${v('f-acc')}`},
+    'transfers:transfer':{title:'Transfer Money',html:`<div class="form-row"><div class="form-group"><label>From Account</label><select id="f-from">${accountOptions}</select></div><div class="form-group"><label>To Account / IBAN</label><input id="f-to" placeholder="ACC-1002 or IBAN..."></div></div><div class="form-row"><div class="form-group"><label>Amount ($)</label><input id="f-amount" type="number" placeholder="500"></div><div class="form-group"><label>Currency</label><select id="f-currency"><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="PKR">PKR</option><option value="AED">AED</option><option value="SAR">SAR</option><option value="INR">INR</option></select></div></div>`,getMessage:()=>`Transfer $${v('f-amount')} ${v('f-currency')} from ${v('f-from')} to ${v('f-to')}`},
+    'transfers:pay-bill':{title:'Pay Bill',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div><div class="form-row"><div class="form-group"><label>Bill Type</label><select id="f-billtype"><option value="electricity">Electricity</option><option value="gas">Gas</option><option value="water">Water</option><option value="internet">Internet</option><option value="phone">Phone</option><option value="insurance">Insurance</option><option value="subscription">Subscription</option></select></div><div class="form-group"><label>Provider (optional)</label><input id="f-provider" placeholder="e.g., K-Electric"></div></div><div class="form-row"><div class="form-group"><label>Amount ($)</label><input id="f-amount" type="number" placeholder="120"></div></div>`,getMessage:()=>`Pay ${v('f-billtype')} bill of $${v('f-amount')}${v('f-provider')?' to '+v('f-provider'):''} from account ${v('f-acc')}`},
+    'loans:eligibility':{title:'Loan Eligibility Check',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div><div class="form-group"><label>Loan Type</label><select id="f-loantype"><option value="personal">Personal Loan</option><option value="home">Home Loan</option><option value="auto">Auto Loan</option><option value="business">Business Loan</option><option value="education">Education Loan</option><option value="gold">Gold Loan</option></select></div></div>`,getMessage:()=>`Check ${v('f-loantype')} loan eligibility for ${v('f-acc')}`},
+    'loans:active-loans':{title:'Active Loans',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Show all active loans and EMI details for ${v('f-acc')}`},
+    'advice:budget':{title:'Budget Analysis',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Give me a complete budget analysis for ${v('f-acc')}`},
+    'advice:investment':{title:'Investment Advice',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Give me personalized investment advice for ${v('f-acc')}`},
+    'advice:savings':{title:'Savings Tips',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Give me smart savings tips and strategies for ${v('f-acc')}`},
+    'security:fraud-scan':{title:'Fraud Detection Scan',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Run a complete fraud detection scan on account ${v('f-acc')}`},
+    'security:report-card':{title:'Report Lost/Stolen Card',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div><div class="form-row"><div class="form-group"><label>Card Type</label><select id="f-cardtype"><option value="debit">Debit Card</option><option value="credit">Credit Card</option></select></div><div class="form-group"><label>Reason</label><select id="f-reason"><option value="lost">Lost</option><option value="stolen">Stolen</option><option value="damaged">Damaged</option></select></div></div>`,getMessage:()=>`Report ${v('f-reason')} ${v('f-cardtype')} card for account ${v('f-acc')}, block it immediately`},
+    'security:kyc':{title:'KYC Verification',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div><div class="form-group"><label>Action</label><select id="f-action"><option value="check_status">Check Status</option><option value="initiate">Initiate KYC</option></select></div></div>`,getMessage:()=>`${v('f-action')==='check_status'?'Check KYC status':'Initiate KYC verification'} for ${v('f-acc')}`},
+    'reports:statement':{title:'Account Statement',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Generate full account statement for ${v('f-acc')}`},
+    'reports:tax':{title:'Tax Report',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Generate tax report for ${v('f-acc')}`},
+    'reports:spending':{title:'Spending Report',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Generate detailed spending report with categories for ${v('f-acc')}`},
+    'branches:find-branch':{title:'Find Branch / ATM',html:`<div class="form-row"><div class="form-group"><label>City</label><input id="f-city" placeholder="e.g., Dubai, Karachi, London, New York..."></div></div>`,getMessage:()=>`Find branches and ATMs in ${v('f-city')}`},
+    'branches:bank-lookup':{title:'Bank Info Lookup',html:`<div class="form-row"><div class="form-group"><label>Bank Name</label><input id="f-bank" placeholder="e.g., HSBC, JPMorgan, HBL, Meezan..."></div><div class="form-group"><label>Info Type</label><select id="f-infotype"><option value="overview">Overview</option><option value="services">Services</option><option value="rates">Rates</option><option value="branches">Branches</option><option value="swift_code">SWIFT Code</option><option value="compare_with_apex">Compare with Apex</option></select></div></div>`,getMessage:()=>`Look up ${v('f-infotype')} for ${v('f-bank')}`},
+    'branches:exchange':{title:'Exchange Rates',html:`<div class="form-row"><div class="form-group"><label>From Currency</label><select id="f-fromcur"><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="PKR">PKR</option><option value="AED">AED</option><option value="SAR">SAR</option><option value="INR">INR</option><option value="SGD">SGD</option><option value="JPY">JPY</option></select></div><div class="form-group"><label>To Currency</label><select id="f-tocur"><option value="PKR">PKR</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="AED">AED</option><option value="SAR">SAR</option><option value="INR">INR</option></select></div></div><div class="form-row"><div class="form-group"><label>Amount (optional)</label><input id="f-amount" type="number" placeholder="1000"></div></div>`,getMessage:()=>`Convert ${v('f-amount')||'1'} ${v('f-fromcur')} to ${v('f-tocur')}`},
+    'branches:knowledge':{title:'Banking Knowledge',html:`<div class="form-row"><div class="form-group"><label>Your Question / Topic</label><input id="f-topic" placeholder="e.g., What is SWIFT code? How does IBAN work?"></div></div>`,getMessage:()=>`${v('f-topic')}`},
+    'staff:market':{title:'Market Analysis',html:`<div class="form-row"><div class="form-group"><label>Region</label><select id="f-region"><option value="global">Global</option><option value="asia">Asia</option><option value="europe">Europe</option><option value="americas">Americas</option><option value="middle_east">Middle East</option><option value="africa">Africa</option></select></div></div>`,getMessage:()=>`Show market analysis for ${v('f-region')} region`},
+    'staff:performance':{title:'Bank Performance Metrics',html:``,getMessage:()=>`Show bank-wide performance metrics, KPIs, and dashboard`},
+    'staff:offers':{title:'Marketing Offers',html:`<div class="form-row"><div class="form-group"><label>Select Account</label><select id="f-acc">${accountOptions}</select></div></div>`,getMessage:()=>`Show personalized marketing offers for ${v('f-acc')}`},
+};
+
+function v(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+
+function showForm(panel,action){
+    const key=panel+':'+action;const tmpl=formTemplates[key];if(!tmpl)return;
+    const formEl=document.getElementById('form-'+panel);
+    formEl.innerHTML=`<h3>${tmpl.title}</h3>${tmpl.html}<button class="submit-btn" onclick="submitForm('${panel}','${key}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Submit</button>`;
+    formEl.classList.add('active');
+    const panelEl=document.getElementById('page-'+panel);
+    panelEl.querySelectorAll('.action-card').forEach(c=>c.classList.remove('active'));
+    document.getElementById('result-'+panel).classList.remove('active');
+    document.getElementById('result-'+panel).innerHTML='';
+}
+
+async function submitForm(panel,key){
+    const tmpl=formTemplates[key];if(!tmpl)return;
+    const message=tmpl.getMessage();
+    if(!message||message.includes('Select Account...')||message.includes('undefined')){alert('Please fill in all required fields.');return;}
+    const resultEl=document.getElementById('result-'+panel);
+    resultEl.innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div><p style="color:var(--gray-400);font-size:13px;margin-top:8px">Processing your request...</p>';
+    resultEl.classList.add('active');
+    const btn=document.querySelector('#form-'+panel+' .submit-btn');
+    if(btn){btn.disabled=true;btn.textContent='Processing...';}
+    try{
+        const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});
+        const data=await res.json();
+        if(data.error){resultEl.innerHTML=`<p style="color:var(--red)">Error: ${escapeHtml(data.error)}</p>`;}
+        else{
+            let html='';
+            if(data.tool_used){
+                const toolLabels={"check_account_balance":"Account Lookup","get_transaction_history":"Transaction History","check_loan_eligibility":"Loan Eligibility","report_lost_card":"Card Security","get_branch_info":"Branch Locator","transfer_money":"Money Transfer","pay_bill":"Bill Payment","get_financial_advice":"Financial Advisor","fraud_detection":"Fraud Scanner","manage_card":"Card Management","update_customer_info":"Profile Update","generate_report":"Report Generator","bank_staff_insights":"Staff Intelligence","marketing_offers":"Offers Engine","kyc_verification":"KYC Verification","lookup_bank_info":"Bank Database","get_exchange_rates":"Exchange Rates","banking_knowledge":"Banking Knowledge"};
+                html+=`<div class="result-badge">&#9881; ${toolLabels[data.tool_used]||data.tool_used}</div>`;
             }
-            const paragraphs = content.split('\n').filter(l => l.trim());
-            html += paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
-            contentDiv.innerHTML = html;
-            msg.appendChild(avatar);
-            msg.appendChild(contentDiv);
-            wrapper.appendChild(msg);
-            chatContainer.appendChild(wrapper);
-            scrollToBottom();
-            return wrapper;
+            const lines=data.reply.split('\n').filter(l=>l.trim());
+            html+='<div class="result-content">'+lines.map(l=>`<p>${escapeHtml(l)}</p>`).join('')+'</div>';
+            resultEl.innerHTML=html;
         }
+    }catch(e){resultEl.innerHTML='<p style="color:var(--red)">Connection error. Please check your internet and try again.</p>';}
+    if(btn){btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Submit';}
+}
 
-        function addTypingIndicator() {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'message-wrapper'; wrapper.id = 'typingIndicator';
-            const msg = document.createElement('div'); msg.className = 'message bot';
-            const avatar = document.createElement('div'); avatar.className = 'message-avatar'; avatar.textContent = 'A';
-            const contentDiv = document.createElement('div'); contentDiv.className = 'message-content';
-            contentDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-            msg.appendChild(avatar); msg.appendChild(contentDiv);
-            wrapper.appendChild(msg); chatContainer.appendChild(wrapper); scrollToBottom();
-        }
-        function removeTypingIndicator() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
-        function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+// ═══════ CHAT ═══════
+const chatContainer=document.getElementById('chatContainer');
+const messageInput=document.getElementById('messageInput');
+const sendBtn=document.getElementById('sendBtn');
+let isProcessing=false;
 
-        async function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text || isProcessing) return;
-            isProcessing = true; sendBtn.disabled = true;
-            messageInput.value = ''; messageInput.style.height = 'auto';
-            addMessage('user', text); addTypingIndicator();
-            try {
-                const res = await fetch('/api/chat', {
-                    method: 'POST', headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({message: text})
-                });
-                const data = await res.json();
-                removeTypingIndicator();
-                if (data.error) addMessage('bot', 'Sorry, something went wrong. Please try again.');
-                else addMessage('bot', data.reply, data.tool_used || null);
-            } catch (err) {
-                removeTypingIndicator();
-                addMessage('bot', 'Connection error. Please check your internet and try again.');
-            }
-            isProcessing = false; sendBtn.disabled = false; messageInput.focus();
-        }
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,150)+'px';}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
 
-        // ====== MANAL VOICE CALL AGENT ======
-        let callInterval, callSeconds = 0, isMuted = false, callActive = false;
-        const manalConversations = [
-            {delay:3, speaker:'manal', text:'Assalam o Alaikum! This is Manal from Apex Bank. How can I assist you today?'},
-            {delay:8, speaker:'manal', text:'I have access to your account details, transaction history, loans, and all banking services. Please tell me your concern.'},
-            {delay:15, speaker:'manal', text:'I can also help you with fund transfers, bill payments, card management, loan applications, and financial advice.'},
-            {delay:22, speaker:'manal', text:'For security, I can verify your identity using your registered phone number and email.'},
-            {delay:30, speaker:'manal', text:'If you need to visit a branch, I can find the nearest one in any of our 25+ countries. Is there anything specific you need help with?'},
-            {delay:38, speaker:'manal', text:'I can also run a fraud detection scan on your account, check your KYC status, or generate reports like tax documents and account statements.'},
-            {delay:46, speaker:'manal', text:'For our premium and wealth management customers, I provide personalized investment advice and portfolio analysis.'},
-            {delay:55, speaker:'manal', text:'Remember, you can also use our chat assistant for instant support anytime. Is there anything else I can help you with?'},
-        ];
+function addMessage(role,content,toolUsed){
+    const wrapper=document.createElement('div');wrapper.className='message-wrapper';
+    const msg=document.createElement('div');msg.className=`message ${role}`;
+    const avatar=document.createElement('div');avatar.className='message-avatar';avatar.textContent=role==='bot'?'A':'Y';
+    const contentDiv=document.createElement('div');contentDiv.className='message-content';
+    let html='';
+    if(toolUsed){html+=`<div class="tool-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>${toolUsed}</div>`;}
+    const paragraphs=content.split('\n').filter(l=>l.trim());
+    html+=paragraphs.map(p=>`<p>${escapeHtml(p)}</p>`).join('');
+    contentDiv.innerHTML=html;msg.appendChild(avatar);msg.appendChild(contentDiv);wrapper.appendChild(msg);chatContainer.appendChild(wrapper);chatContainer.scrollTop=chatContainer.scrollHeight;return wrapper;
+}
 
-        function startCall() {
-            callActive = true; callSeconds = 0; isMuted = false;
-            document.getElementById('callModal').classList.add('active');
-            document.getElementById('callAvatar').classList.add('calling');
-            document.getElementById('callStatus').textContent = 'Connecting...';
-            document.getElementById('callTimer').style.display = 'none';
-            document.getElementById('voiceTranscript').style.display = 'none';
-            document.getElementById('voiceTranscript').innerHTML = '';
-            document.getElementById('muteBtn').classList.remove('active');
-            setTimeout(() => {
-                if (!callActive) return;
-                document.getElementById('callStatus').textContent = 'Connected';
-                document.getElementById('callAvatar').classList.remove('calling');
-                document.getElementById('callTimer').style.display = 'block';
-                document.getElementById('voiceTranscript').style.display = 'block';
-                callInterval = setInterval(() => {
-                    callSeconds++;
-                    const m = Math.floor(callSeconds / 60).toString().padStart(2,'0');
-                    const s = (callSeconds % 60).toString().padStart(2,'0');
-                    document.getElementById('callTimer').textContent = `${m}:${s}`;
-                }, 1000);
-                manalConversations.forEach(conv => {
-                    setTimeout(() => {
-                        if (!callActive) return;
-                        const transcript = document.getElementById('voiceTranscript');
-                        const label = conv.speaker === 'manal' ? '<span class="manal">Manal:</span>' : '<span class="customer">You:</span>';
-                        transcript.innerHTML += `${label} ${conv.text}<br><br>`;
-                        transcript.scrollTop = transcript.scrollHeight;
-                    }, conv.delay * 1000);
-                });
-            }, 2000);
-        }
+function addTypingIndicator(){
+    const wrapper=document.createElement('div');wrapper.className='message-wrapper';wrapper.id='typingIndicator';
+    const msg=document.createElement('div');msg.className='message bot';
+    const avatar=document.createElement('div');avatar.className='message-avatar';avatar.textContent='A';
+    const contentDiv=document.createElement('div');contentDiv.className='message-content';
+    contentDiv.innerHTML='<div class="typing-indicator"><span></span><span></span><span></span></div>';
+    msg.appendChild(avatar);msg.appendChild(contentDiv);wrapper.appendChild(msg);chatContainer.appendChild(wrapper);chatContainer.scrollTop=chatContainer.scrollHeight;
+}
+function removeTypingIndicator(){const el=document.getElementById('typingIndicator');if(el)el.remove();}
 
-        function endCall() {
-            callActive = false;
-            clearInterval(callInterval);
-            document.getElementById('callModal').classList.remove('active');
-            document.getElementById('callAvatar').classList.remove('calling');
-            if (callSeconds > 0) {
-                const m = Math.floor(callSeconds / 60).toString().padStart(2,'0');
-                const s = (callSeconds % 60).toString().padStart(2,'0');
-                addMessage('bot', `Voice call with Manal ended. Duration: ${m}:${s}\n\nManal is Apex Bank\'s Senior Banking Officer available for voice support. She can assist with any banking need — accounts, transfers, loans, fraud issues, and more.\n\nYou can also continue chatting here for instant help.`, 'Voice Agent: Manal');
-            }
-        }
+async function sendMessage(){
+    const text=messageInput.value.trim();if(!text||isProcessing)return;
+    isProcessing=true;sendBtn.disabled=true;messageInput.value='';messageInput.style.height='auto';
+    addMessage('user',text);addTypingIndicator();
+    try{
+        const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
+        const data=await res.json();removeTypingIndicator();
+        if(data.error)addMessage('bot','Sorry, something went wrong. Please try again.');
+        else addMessage('bot',data.reply,data.tool_used||null);
+    }catch(err){removeTypingIndicator();addMessage('bot','Connection error. Please check your internet and try again.');}
+    isProcessing=false;sendBtn.disabled=false;messageInput.focus();
+}
 
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('muteBtn').classList.toggle('active', isMuted);
-            document.getElementById('muteBtn').innerHTML = isMuted ? '&#128264;' : '&#128263;';
-        }
+// ═══════ MANAL VOICE CALL ═══════
+let callInterval,callSeconds=0,isMuted=false,callActive=false;
+let recognition=null,isListening=false,manalSpeaking=false;
+let manalVoice=null,voiceConversationHistory=[];
 
-        messageInput.focus();
-    </script>
+function pickManalVoice(){
+    const voices=speechSynthesis.getVoices();
+    const preferred=['Zira','Google UK English Female','Samantha','Karen','Fiona','Moira','Victoria','Female'];
+    for(const pref of preferred){const found=voices.find(v=>v.name.includes(pref));if(found)return found;}
+    return voices.find(v=>v.lang.startsWith('en'))||voices[0]||null;
+}
+speechSynthesis.onvoiceschanged=()=>{manalVoice=pickManalVoice();};
+setTimeout(()=>{if(!manalVoice)manalVoice=pickManalVoice();},500);
+
+function manalSpeak(text,onDone){
+    if(!callActive||isMuted){if(onDone)onDone();return;}
+    manalSpeaking=true;const wave=document.getElementById('voiceWave');
+    wave.classList.remove('hidden','listening');
+    document.getElementById('voiceStatus').textContent='Manal is speaking...';
+    document.getElementById('callAvatar').classList.add('calling');
+    const utterance=new SpeechSynthesisUtterance(text);
+    if(manalVoice)utterance.voice=manalVoice;utterance.rate=0.95;utterance.pitch=1.1;utterance.volume=1;
+    utterance.onend=()=>{manalSpeaking=false;wave.classList.add('hidden');document.getElementById('callAvatar').classList.remove('calling');document.getElementById('voiceStatus').textContent='Listening... speak now';if(onDone)onDone();if(callActive&&!isMuted){setTimeout(()=>{if(callActive&&!isListening)startListening();},400);}};
+    utterance.onerror=()=>{manalSpeaking=false;wave.classList.add('hidden');document.getElementById('callAvatar').classList.remove('calling');if(onDone)onDone();};
+    speechSynthesis.speak(utterance);
+}
+
+function addTranscriptLine(speaker,text){
+    const transcript=document.getElementById('voiceTranscript');
+    const label=speaker==='manal'?'<span class="manal">Manal:</span>':'<span class="customer">You:</span>';
+    transcript.innerHTML+=`${label} ${escapeHtml(text)}<br><br>`;transcript.scrollTop=transcript.scrollHeight;
+}
+
+async function getManalReply(userText){
+    document.getElementById('voiceStatus').textContent='Manal is thinking...';
+    try{const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:userText,voice_mode:true})});const data=await res.json();if(data.error)return"I'm sorry, I couldn't process that. Could you try again?";return data.reply;}catch(e){return"I'm having trouble connecting right now. Please try again.";}
+}
+
+function setupRecognition(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){alert('Your browser does not support Speech Recognition. Please use Chrome or Edge.');return null;}
+    const rec=new SR();rec.continuous=false;rec.interimResults=true;rec.lang='en-US';rec.maxAlternatives=1;
+    rec.onresult=(event)=>{let finalText='';let interimText='';for(let i=event.resultIndex;i<event.results.length;i++){if(event.results[i].isFinal)finalText+=event.results[i][0].transcript;else interimText+=event.results[i][0].transcript;}if(interimText)document.getElementById('voiceStatus').textContent=`Hearing: "${interimText}"`;if(finalText){stopListening();handleUserVoiceInput(finalText.trim());}};
+    rec.onerror=(event)=>{if(event.error==='no-speech'){stopListening();if(callActive&&!manalSpeaking)setTimeout(()=>{if(callActive&&!isListening)startListening();},300);}else if(event.error!=='aborted'){document.getElementById('voiceStatus').textContent=`Mic error: ${event.error}. Tap mic to retry.`;stopListening();}else stopListening();};
+    rec.onend=()=>{if(isListening)stopListening();if(callActive&&!manalSpeaking&&!document.getElementById('voiceStatus').textContent.includes('thinking'))setTimeout(()=>{if(callActive&&!isListening&&!manalSpeaking)startListening();},500);};
+    return rec;
+}
+
+async function handleUserVoiceInput(text){
+    if(!callActive||!text)return;if(isListening)stopListening();
+    addTranscriptLine('you',text);voiceConversationHistory.push({role:'user',text});
+    const reply=await getManalReply(text);if(!callActive)return;
+    addTranscriptLine('manal',reply);voiceConversationHistory.push({role:'manal',text:reply});manalSpeak(reply);
+}
+
+function toggleListening(){
+    if(!callActive)return;
+    if(manalSpeaking){speechSynthesis.cancel();manalSpeaking=false;document.getElementById('voiceWave').classList.add('hidden');document.getElementById('callAvatar').classList.remove('calling');}
+    if(isListening)stopListening();else startListening();
+}
+function startListening(){
+    if(!recognition)recognition=setupRecognition();if(!recognition)return;isListening=true;
+    document.getElementById('speakBtn').classList.add('listening');document.getElementById('speakBtn').innerHTML='&#128308;';
+    const wave=document.getElementById('voiceWave');wave.classList.remove('hidden');wave.classList.add('listening');
+    document.getElementById('voiceStatus').textContent='Listening... speak now';try{recognition.start();}catch(e){}
+}
+function stopListening(){
+    isListening=false;document.getElementById('speakBtn').classList.remove('listening');document.getElementById('speakBtn').innerHTML='&#127908;';
+    const wave=document.getElementById('voiceWave');wave.classList.add('hidden');wave.classList.remove('listening');try{recognition.stop();}catch(e){}
+}
+function startCall(){
+    callActive=true;callSeconds=0;isMuted=false;voiceConversationHistory=[];
+    document.getElementById('callModal').classList.add('active');document.getElementById('callAvatar').classList.add('calling');
+    document.getElementById('callStatus').textContent='Connecting...';document.getElementById('callTimer').style.display='none';
+    document.getElementById('voiceTranscript').style.display='none';document.getElementById('voiceTranscript').innerHTML='';
+    document.getElementById('voiceWave').classList.add('hidden');document.getElementById('voiceStatus').textContent='';
+    document.getElementById('muteBtn').classList.remove('active');document.getElementById('speakBtn').classList.remove('listening');document.getElementById('speakBtn').innerHTML='&#127908;';
+    setTimeout(()=>{if(!callActive)return;document.getElementById('callStatus').textContent='Connected';document.getElementById('callTimer').style.display='block';document.getElementById('voiceTranscript').style.display='block';
+        callInterval=setInterval(()=>{callSeconds++;const m=Math.floor(callSeconds/60).toString().padStart(2,'0');const s=(callSeconds%60).toString().padStart(2,'0');document.getElementById('callTimer').textContent=`${m}:${s}`;},1000);
+        const greeting='Assalam o Alaikum! This is Manal from Apex Bank. How can I assist you today?';addTranscriptLine('manal',greeting);manalSpeak(greeting);
+    },2000);
+}
+function endCall(){callActive=false;clearInterval(callInterval);stopListening();speechSynthesis.cancel();manalSpeaking=false;document.getElementById('callModal').classList.remove('active');document.getElementById('callAvatar').classList.remove('calling');document.getElementById('voiceWave').classList.add('hidden');}
+function toggleMute(){isMuted=!isMuted;document.getElementById('muteBtn').classList.toggle('active',isMuted);document.getElementById('muteBtn').innerHTML=isMuted?'&#128264;':'&#128263;';if(isMuted&&manalSpeaking){speechSynthesis.cancel();manalSpeaking=false;document.getElementById('voiceWave').classList.add('hidden');document.getElementById('voiceStatus').textContent='Manal muted. Tap mic to speak.';}}
+</script>
 </body>
 </html>
